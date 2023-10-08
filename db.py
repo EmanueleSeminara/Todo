@@ -3,7 +3,7 @@ from sqlite3 import connect
 from task import Task
 
 def connect_db():
-    conn = connect("/home/Zifro/progetti/todo/todo.db")
+    conn = connect("todo.db")
     conn.execute('''
         CREATE TABLE IF NOT EXISTS tasks (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
