@@ -7,6 +7,7 @@ class TodoList:
     def __init__(self):
         self.conn = connect_db()
         self.tasks = get_all_tasks(self.conn)
+        print(self.tasks)
 
     def aggiungi_task(self, nome, data, category):
         task = Task(nome, data, category)
@@ -16,7 +17,7 @@ class TodoList:
     def mostra_task(self):
         #tasks = get_all_tasks(self.conn)
         if not self.tasks:
-            print("La lista delle attivita' e' vuota.")
+            print(f"La lista delle attivita' e' vuota {self.tasks}.")
             return
 
         print("{:<3} {:<30} {:<10} {:<10}".format("ID", "Nome", "Data", "Categoria"))
@@ -28,8 +29,6 @@ class TodoList:
         self.tasks = get_all_tasks(self.conn)
 
     def mod_task(self, task_id, edited_task):
-        print(f"{edited_task} - {task_id}")
-        old_task = get_task(self.conn, task_id)
         edited_task.set_id(task_id)
         edit_task(self.conn, edited_task)
         self.tasks = get_all_tasks(self.conn)

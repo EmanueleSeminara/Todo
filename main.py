@@ -1,20 +1,44 @@
 # main.py
 from todolist import TodoList
-from os import system
+from os import system, name
 from task import Task
 from db import get_task, connect_db
 
+def clear_screen():
+    system('clear' if name == 'posix' else 'cls')
+
+def help_message():
+    return "Comandi: Task, Movement + option\n\bconfig, help\nEx1: task add\nEx2: tsk a\nEx3: config"
+
 def main():
     todo_list = TodoList()
+    first = True
 
     while True:
-        #system("clear")
-        print("\n[A]dd [L]ist [S]elect [R]emove [E]dit [EX]it/n> ")
+        if(first):
+            clear_screen()
+            first = False
+        print("\nOption: [A]dd [L]ist [S]elect [R]emove [E]dit [H]elp [EX]it")
+        scelta = input("> ").upper().split()
+        tipo = ""
+        print(len(scelta))
+        if(len(scelta) == 2):
+            tipo = scelta[0]
+            scelta = scelta[1]
 
-        scelta = input("\nScegli un'opzione: ")
-        #system("clear")
-        if(scelta.upper() == "A" or scelta.upper() == "ADD"):
-            system("clear")
+        print(f"Scelta: {scelta} - Tipo: {tipo}")
+        if(scelta[0] in ("H", "HELP")):
+            clear_screen()
+            print(help_message())
+        elif(scelta[0] in ("EX", "EXIT")):
+            break
+        elif(scelta[0] in ("C", "CONFIG")):
+            clear_screen()
+            print("--------- CONFIG ----------")
+        
+
+        if(scelta in ("A", "ADD")):
+            clear_screen()
             print("----- Aggiunta nuovo task ------")
             nome = input("Nome: ")
             data = input("Data:: ")
@@ -22,24 +46,25 @@ def main():
             todo_list.aggiungi_task(nome, data, category)
             print("Task aggiunto con successo!")
             input()
-        elif(scelta.upper() == "L" or scelta.upper() == "LISTA"):
-            system("clear")
+            clear_screen()
+        elif(scelta == "L" or scelta == "LIST"):
+            clear_screen()
             todo_list.mostra_task()
             #input()
-        elif(scelta == "S" or scelta.upper() == "SELECT"):
+        elif(scelta == "S" or scelta == "SELECT"):
             task_id = input("Task id: ")
-            system("clear")
+            clear_screen()
             print("----- Task in visualizzazione ------")
             conn = connect_db()
             task_to_show = get_task(conn, task_id)
             print(f"ID: {task_id}\nNome: {task_to_show.name}\nCategoria: {task_to_show.category}\nData: {task_to_show.date}\n\n")
-            input()
-        elif(scelta.upper() == "R" or scelta.upper() == "REMOVE"):
+            #input("Premere invio per tornare al menu'")
+        elif(scelta == "R" or scelta == "REMOVE"):
             task_id = input("Inserire l'id del task da rimuovere: ")
             todo_list.remove_task(task_id)
-        elif(scelta.upper() == "E" or scelta.upper() == "EDIT"):
+        elif(scelta == "E" or scelta == "EDIT"):
             task_id = input("Id del task da modificare: ")
-            system("clear")
+            clear_screen()
             conn = connect_db()
             old_task = get_task(conn, task_id)
             print("----- Task in modifica ------")
@@ -51,7 +76,7 @@ def main():
             new_task = Task(task_name, task_date, task_category)
             new_task.set_id(task_id)
             todo_list.mod_task(task_id, new_task)
-        elif(scelta.upper() == "EX" or scelta.upper() == "EXIT"):
+        elif(scelta == "EX" or scelta == "EXIT"):
              break
 
         else:

@@ -1,6 +1,7 @@
 # db.py
 from sqlite3 import connect
 from task import Task
+from movement import Movement
 
 def connect_db():
     conn = connect("todo.db")
@@ -21,7 +22,7 @@ def connect_db():
             date TEXT,
             category TEXT NOT NULL,
             amount REAL NOT NULL,
-            movememnt_type TEXT NOT NULL
+            type TEXT NOT NULL
         )
     ''')
     return conn
@@ -53,4 +54,19 @@ def get_task(conn, edit_task_id):
     task_data = cursor.fetchone()
     result = Task(task_data[1], task_data[2], task_data[3])
     result.set_id(id)
+    return result
+
+# MOVEMENTS
+def add_movement(conn, movement):
+    conn.execute("INSERT INTO movemements (name, date, category, amount, type) VALUES (?, ?, ?)", (movement.name, movement.date, movement.category, movement.amount, movement.type))
+    conn.commit()
+
+def get_all_movements(conn):
+    cursor = conn.execute("SELECT * FROM movements")
+    movements = cursor.fetchall()
+    result = []
+    for movement_data in movements:
+        movement = Movement(movement_data[1], movement_data[2], movement_data[3], movement_data[4], movement_data[5])
+        movement.set_id(movement_data[0])
+        result.append(movement)
     return result
