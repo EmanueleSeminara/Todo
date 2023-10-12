@@ -13,6 +13,17 @@ def connect_db():
 
         )
     ''')
+    
+    conn.execute('''
+        CREATE TABLE IF NOT EXISTS movements (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            date TEXT,
+            category TEXT NOT NULL,
+            amount REAL NOT NULL,
+            movememnt_type TEXT NOT NULL
+        )
+    ''')
     return conn
 
 def add_task(conn, task):

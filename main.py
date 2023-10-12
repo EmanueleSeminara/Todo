@@ -9,29 +9,35 @@ def main():
 
     while True:
         #system("clear")
-        print("\n1. Aggiungi Task")
-        print("2. Mostra Task")
-        print("3. Rimuovi Task")
-        print("4. Modifica Task")
-        print("0. Esci")
+        print("\n[A]dd [L]ist [S]elect [R]emove [E]dit [EX]it/n> ")
 
-        scelta = input("Scegli un'opzione: ")
+        scelta = input("\nScegli un'opzione: ")
         #system("clear")
-        if(scelta == "1"):
+        if(scelta.upper() == "A" or scelta.upper() == "ADD"):
+            system("clear")
+            print("----- Aggiunta nuovo task ------")
             nome = input("Nome: ")
             data = input("Data:: ")
             category = input("Categoria: ")
             todo_list.aggiungi_task(nome, data, category)
             print("Task aggiunto con successo!")
             input()
-        elif(scelta == "2"):
+        elif(scelta.upper() == "L" or scelta.upper() == "LISTA"):
             system("clear")
             todo_list.mostra_task()
             #input()
-        elif(scelta == "3"):
+        elif(scelta == "S" or scelta.upper() == "SELECT"):
+            task_id = input("Task id: ")
+            system("clear")
+            print("----- Task in visualizzazione ------")
+            conn = connect_db()
+            task_to_show = get_task(conn, task_id)
+            print(f"ID: {task_id}\nNome: {task_to_show.name}\nCategoria: {task_to_show.category}\nData: {task_to_show.date}\n\n")
+            input()
+        elif(scelta.upper() == "R" or scelta.upper() == "REMOVE"):
             task_id = input("Inserire l'id del task da rimuovere: ")
             todo_list.remove_task(task_id)
-        elif(scelta == "4"):
+        elif(scelta.upper() == "E" or scelta.upper() == "EDIT"):
             task_id = input("Id del task da modificare: ")
             system("clear")
             conn = connect_db()
@@ -45,7 +51,7 @@ def main():
             new_task = Task(task_name, task_date, task_category)
             new_task.set_id(task_id)
             todo_list.mod_task(task_id, new_task)
-        elif(scelta == "0"):
+        elif(scelta.upper() == "EX" or scelta.upper() == "EXIT"):
              break
 
         else:
