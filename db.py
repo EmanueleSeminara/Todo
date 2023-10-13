@@ -58,7 +58,7 @@ def get_task(conn, edit_task_id):
 
 # MOVEMENTS
 def add_movement(conn, movement):
-    conn.execute("INSERT INTO movemements (name, date, category, amount, type) VALUES (?, ?, ?)", (movement.name, movement.date, movement.category, movement.amount, movement.type))
+    conn.execute("INSERT INTO movements (name, date, category, amount, type) VALUES (?, ?, ?, ?, ?)", (movement.name, movement.date, movement.category, movement.amount, movement.type))
     conn.commit()
 
 def get_all_movements(conn):
