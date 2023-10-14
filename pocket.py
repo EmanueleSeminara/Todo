@@ -1,15 +1,15 @@
 # pocket.py
 from movement import Movement
 from os import system
-from db import connect_db, add_movement, get_all_movements
+from db import connect_db, add_movement, get_all_movements, delete_movement
 class Pocket:
     def __init__(self):
         self.conn = connect_db()
         self.movements = get_all_movements(self.conn)
         print(self.movements)
 
-    def aggiungi_movement(self, nome, data, category, amount, type):
-        movement = Movement(nome, data, category, amount, type)
+    def aggiungi_movement(self, nome, data, category, amount, mv_type):
+        movement = Movement(nome, data, category, amount, mv_type)
         add_movement(self.conn, movement)
         self.movements = get_all_movements(self.conn)
 
@@ -21,4 +21,8 @@ class Pocket:
 
         print("{:<3} {:<30} {:<10} {:<10} {:<10} {:<15}".format("ID", "Nome", "Data", "Categoria", "Cifra", "Tipologia"))
         for movement in self.movements:
-            print("{:<3} {:<30} {:<10} {:<10}".format(movement.id, movement.name[:30], movement.date, movement.category))
+            print("{:<3} {:<30} {:<10} {:<10} {:<10} {:<15}".format(movement.id, movement.name[:30], movement.date, movement.category, movement.amount, movement.type))
+
+    def remove_movement(self, id):
+        delete_movement(self.conn, id)
+        self.movements = get_all_movements(self.conn)

@@ -58,6 +58,7 @@ def get_task(conn, edit_task_id):
 
 # MOVEMENTS
 def add_movement(conn, movement):
+    print(f"{movement.name} {movement.date} {movement.category} {movement.amount} {movement.type}")
     conn.execute("INSERT INTO movements (name, date, category, amount, type) VALUES (?, ?, ?, ?, ?)", (movement.name, movement.date, movement.category, movement.amount, movement.type))
     conn.commit()
 
@@ -70,3 +71,7 @@ def get_all_movements(conn):
         movement.set_id(movement_data[0])
         result.append(movement)
     return result
+
+def delete_movement(conn, id):
+    conn.execute("DELETE FROM movements WHERE id=?", (id, ))
+    conn.commit()

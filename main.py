@@ -104,6 +104,9 @@ def main():
                 clear_screen()
                 pocket.mostra_movement()
                 #input()
+            elif(scelta in ("R", "REMOVE")):
+                mv_id = input("ID del movimento da RIMUOVERE: ")
+                pocket.remove_movement(mv_id)
         else:
              print("Scelta non valida, Riprova.")
 
