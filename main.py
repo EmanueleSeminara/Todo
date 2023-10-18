@@ -102,8 +102,9 @@ def main():
                 clear_screen()
             elif(scelta == "L" or scelta == "LIST"):
                 clear_screen()
-                pocket.mostra_movement()
-                #input()
+                #pocket.mostra_movement()
+                pocket.mostra_movements_page(1)
+                input()
             elif(scelta in ("R", "REMOVE")):
                 mv_id = input("ID del movimento da RIMUOVERE: ")
                 pocket.remove_movement(mv_id)

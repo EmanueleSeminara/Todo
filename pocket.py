@@ -26,3 +26,10 @@ class Pocket:
     def remove_movement(self, id):
         delete_movement(self.conn, id)
         self.movements = get_all_movements(self.conn)
+
+    def mostra_movements_page(self, page, num_for_page = 3):
+        print("CIAO")
+        mv_to_show = self.movements[(page - 1) * num_for_page : page * num_for_page]
+
+        for movement_data in mv_to_show:
+            print(movement_data.name)
