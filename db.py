@@ -53,7 +53,7 @@ def get_task(conn, edit_task_id):
     cursor = conn.execute("SELECT * FROM tasks WHERE id = ?", (edit_task_id,))
     task_data = cursor.fetchone()
     result = Task(task_data[1], task_data[2], task_data[3])
-    result.set_id(id)
+    result.set_id(edit_task_id)
     return result
 
 # MOVEMENTS
