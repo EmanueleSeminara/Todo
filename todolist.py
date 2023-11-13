@@ -63,6 +63,7 @@ class TodoList:
         print("| {:<3}|{:<40}|{:<12}|{:<22} |".format("ID", "Nome", "Data", "Categoria"))
         print("------------------------------------------------------------------------------------")
         for task in task_to_show:
+            print(isinstance(task.date, str))
             print("| {:<3}|{:<40}|{:<12}|{:<22} |".format(task.id, task.name[:30], task.date if isinstance(task.date, str) else task.date.strftime('%d%m'), task.category))
         print("------------------------------------------------------------------------------------")
         print(len(self.tasks))
