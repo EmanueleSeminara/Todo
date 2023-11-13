@@ -52,20 +52,22 @@ class TodoList:
         self.tasks = get_all_tasks(self.conn)
 
     def mostra_tasks_page(self, page, num_for_page = 3):
-        num_for_page = self.recordPageNumber
+        num_for_page = int(self.recordPageNumber)
         j = int(page) * int(num_for_page)
         page = int(page - 1)
         i = page if page == 0 else page * num_for_page
+        print(page)
         i = int(i)
         task_to_show = self.tasks[i : j]
+        print(f"{type(i)} {j}")
         
-        print("-----------------------------------------------------------------------")
-        print("|{:<3}|{:<40}\{:<8}|{:<15}|".format("ID", "Nome", "Data", "Categoria"))
-        print("-----------------------------------------------------------------------")
+        print("------------------------------------------------------------------------------------")
+        print("| {:<3}|{:<40}|{:<12}|{:<22} |".format("ID", "Nome", "Data", "Categoria"))
+        print("------------------------------------------------------------------------------------")
         for task in task_to_show:
-            print("|{:<3}|{:<40}|{:<8}|{:<15}|".format(task.id, task.name[:30], task.date if isinstance(task.date, str) else task.date.strftime('%d%m'), task.category))
-        print("-----------------------------------------------------------------------")
-
+            print("| {:<3}|{:<40}|{:<12}|{:<22} |".format(task.id, task.name[:30], task.date if isinstance(task.date, str) else task.date.strftime('%d%m'), task.category))
+        print("------------------------------------------------------------------------------------")
+        print(len(self.tasks))
     def setRecordPage(self, tasks_record_number):
         # Nome del file JSON
         file_path = "config.json"
