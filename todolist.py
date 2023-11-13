@@ -44,4 +44,5 @@ class TodoList:
 
         print("{:<3} {:<40} {:<8} {:<15}".format("ID", "Nome", "Data", "Categoria"))
         for task in tasks_to_show:
-            print("{:<3} {:<40} {:<8} {:<15}".format(task.id, task.name[:30], task.date.strftime('%d/%m'), task.category))
+            print("{:<3} {:<40} {:<8} {:<15}".format(task.id, task.name[:30], task.date if isinstance(task.date, str) else task.date.strftime('%d%m'), task.category))
+            #print(task.date)
