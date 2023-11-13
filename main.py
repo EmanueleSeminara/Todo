@@ -47,6 +47,11 @@ def main():
         if(len(scelta) == 2):
             tipo = scelta[0]
             scelta = scelta[1]
+        elif(len(scelta) == 3):
+            tipo = scelta[0]
+            number_page = scelta[2]
+            scelta = scelta[1]
+            
 
         print(f"Scelta: {scelta} - Tipo: {tipo}")
         if(scelta[0] in ("H", "HELP")):
@@ -100,6 +105,9 @@ def main():
                 print("Task aggiunto con successo!")
                 input()
                 clear_screen()
+            elif(scelta == "L" or scelta == "LIST" and number_page):
+                clear_screen()
+                todo_list.mostra_tasks_page(int(number_page))
             elif(scelta == "L" or scelta == "LIST"):
                 clear_screen()
                 todo_list.mostra_task()
@@ -142,11 +150,15 @@ def main():
                 print("Movimento aggiunto con successo!")
                 input()
                 clear_screen()
+            elif((scelta == "L" or scelta == "LIST") and number_page):
+                clear_screen()
+                pocket.mostra_movements_page(int(number_page))
+                input()
             elif(scelta == "L" or scelta == "LIST"):
                 clear_screen()
-                #pocket.mostra_movement()
-                pocket.mostra_movements_page(1)
+                pocket.mostra_movement()
                 input()
+            
             elif(scelta in ("R", "REMOVE")):
                 mv_id = input("ID del movimento da RIMUOVERE: ")
                 pocket.remove_movement(mv_id)

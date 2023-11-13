@@ -37,3 +37,11 @@ class TodoList:
         self.tasks = get_all_tasks(self.conn)
 
 
+    def mostra_tasks_page(self, page, num_for_page = 3):
+        
+        tasks_to_show = self.tasks[(page - 1) * num_for_page : page * num_for_page]
+        print(f"{tasks_to_show}")
+
+        print("{:<3} {:<40} {:<8} {:<15}".format("ID", "Nome", "Data", "Categoria"))
+        for task in tasks_to_show:
+            print("{:<3} {:<40} {:<8} {:<15}".format(task.id, task.name[:30], task.date.strftime('%d/%m'), task.category))

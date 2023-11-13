@@ -21,15 +21,17 @@ class Pocket:
 
         print("{:<3} {:<30} {:<10} {:<10} {:<10} {:<15}".format("ID", "Nome", "Data", "Categoria", "Cifra", "Tipologia"))
         for movement in self.movements:
-            print("{:<3} {:<30} {:<10} {:<10} {:<10} {:<15}".format(movement.id, movement.name[:30], movement.date, movement.category, movement.amount, movement.type))
+            print("{:<3} {:<30} {:<10} {:<10} {:<10} {:<15}".format(movement.id, movement.name[:30], movement.data_contabile, movement.category, movement.amount, movement.type))
 
     def remove_movement(self, id):
         delete_movement(self.conn, id)
         self.movements = get_all_movements(self.conn)
 
     def mostra_movements_page(self, page, num_for_page = 3):
-        print("CIAO")
+        
         mv_to_show = self.movements[(page - 1) * num_for_page : page * num_for_page]
+        print(f"{mv_to_show}")
 
-        for movement_data in mv_to_show:
-            print(movement_data.name)
+        print("{:<3} {:<30} {:<10} {:<10} {:<10} {:<15}".format("ID", "Nome", "Data", "Categoria", "Cifra", "Tipologia"))
+        for movement in mv_to_show:
+            print("{:<3} {:<30} {:<10} {:<10} {:<10} {:<15}".format(movement.id, movement.name[:30], movement.data_contabile, movement.category, movement.amount, movement.type))
