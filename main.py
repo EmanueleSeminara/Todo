@@ -5,7 +5,37 @@ from os import system, name
 from task import Task
 from db import get_task, connect_db, process_directory, confronta_e_aggiorna, add_movements_file
 from utils import rimuovi_vecchio_db
-import os
+import os, json
+
+def start():
+    # Ottieni il percorso della directory del progetto
+    project_directory = os.getcwd()
+
+    # Crea la cartella 'temp' se non esiste già
+    temp_directory = os.path.join(project_directory, 'temp')
+    os.makedirs(temp_directory, exist_ok=True)
+
+    # Crea la cartella 'csv' se non esiste già
+    csv_directory = os.path.join(project_directory, 'csv')
+    os.makedirs(csv_directory, exist_ok=True)
+
+    # Definisci i dati da inserire nel file config.json
+    config_data = {
+        "MOVEMENTS_RECORD_PAGE": "10",
+        "TASKS_RECORD_PAGE": "10"
+    }
+
+    # Crea il percorso completo del file config.json
+    config_file_path = os.path.join(project_directory, 'config.json')
+
+    # Scrivi i dati nel file config.json se il file non esiste già
+    if not os.path.exists(config_file_path):
+        with open(config_file_path, 'w') as config_file:
+            json.dump(config_data, config_file, indent=2)
+        print("File config.json creato con successo nella directory del progetto.")
+
+    print(f"Cartella 'temp' creata con successo nella directory del progetto: {temp_directory}")
+    print(f"Cartella 'csv' creata con successo nella directory del progetto: {csv_directory}")
 
 
 
@@ -21,6 +51,8 @@ def error_message():
 
 
 def main():
+    start()
+
     db_path = "todo.db"
     db_temp_path = "temp/temp.dp"
     connect_db(db_temp_path)
@@ -63,14 +95,23 @@ def main():
         elif(scelta[0] in ("C", "CONFIG")):
             clear_screen()
             print("--------- CONFIG ----------")
-            print("1. Record per pagina")
-            print("2. Importa transazioni")
+            print("1. Record per pagina Movimenti")
+            print("2. Record per pagina Tasks")
+            print("3. Importa transazioni")
 
             scelta = input("> ").upper()
 
             if(scelta == "1"):
-                pass
+                print(f"Valore attuale: {movements.recordPageNumber}")
+                num = input("Inserisci record per pagina: ")
+                print(num)
+                pocket.setRecordPage(num)
             elif(scelta == "2"):
+                print(f"Valore attuale: {todo_list.recordPageNumber}")
+                num = input("Inserisci record per pagina: ")
+                print(num)
+                todo_list.setRecordPage(num)
+            elif(scelta == "3"):
                 path = "./csv" # input("Path: ").upper()
                 print(path)
                 # Esempio: Sostituisci 'path_della_tua_directory' con il percorso della tua directory
@@ -153,7 +194,6 @@ def main():
             elif((scelta == "L" or scelta == "LIST") and number_page):
                 clear_screen()
                 pocket.mostra_movements_page(int(number_page))
-                input()
             elif(scelta == "L" or scelta == "LIST"):
                 clear_screen()
                 pocket.mostra_movement()
@@ -162,8 +202,7 @@ def main():
             elif(scelta in ("R", "REMOVE")):
                 mv_id = input("ID del movimento da RIMUOVERE: ")
                 pocket.remove_movement(mv_id)
-        # else:
-        #      print("Scelta non valida, Riprova.")
+
 
 
 if(__name__ == "__main__"):
