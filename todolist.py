@@ -56,10 +56,8 @@ class TodoList:
         j = int(page) * int(num_for_page)
         page = int(page - 1)
         i = page if page == 0 else page * num_for_page
-        print(page)
         i = int(i)
         task_to_show = self.tasks[i : j]
-        print(f"{type(i)} {j}")
         
         print("------------------------------------------------------------------------------------")
         print("| {:<3}|{:<40}|{:<12}|{:<22} |".format("ID", "Nome", "Data", "Categoria"))

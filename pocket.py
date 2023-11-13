@@ -43,7 +43,7 @@ class Pocket:
         self.movements = get_all_movements(self.conn)
 
     def mostra_movements_page(self, page, num_for_page = 3):
-        num_for_page = self.recordPageNumber
+        num_for_page = int(self.recordPageNumber)
         j = int(page) * int(num_for_page)
         page = int(page - 1)
         i = page if page == 0 else page * num_for_page
