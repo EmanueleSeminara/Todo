@@ -3,7 +3,11 @@ from todolist import TodoList
 from pocket import Pocket
 from os import system, name
 from task import Task
-from db import get_task, connect_db
+from db import get_task, connect_db, process_directory, confronta_e_aggiorna, add_movements_file
+from utils import rimuovi_vecchio_db
+import os
+
+
 
 def clear_screen():
     system('clear' if name == 'posix' else 'cls')
@@ -13,9 +17,19 @@ def help_message():
 def error_message():
     return "##### Usa help per visualizzare i comandi #####"
 
+
+
+
 def main():
-    todo_list = TodoList()
-    pocket = Pocket()
+    db_path = "todo.db"
+    db_temp_path = "temp/temp.dp"
+    connect_db(db_temp_path)
+    old_db_path = db_path
+    new_db_path = db_temp_path
+    confronta_e_aggiorna(old_db_path, new_db_path)
+    rimuovi_vecchio_db(new_db_path)
+    todo_list = TodoList(db_path)
+    pocket = Pocket(db_path)
     first = True
 
     while True:
@@ -45,6 +59,34 @@ def main():
             clear_screen()
             print("--------- CONFIG ----------")
             print("1. Record per pagina")
+            print("2. Importa transazioni")
+
+            scelta = input("> ").upper()
+
+            if(scelta == "1"):
+                pass
+            elif(scelta == "2"):
+                path = "./csv" # input("Path: ").upper()
+                print(path)
+                # Esempio: Sostituisci 'path_della_tua_directory' con il percorso della tua directory
+                directory_path = path
+                conn = connect_db(db_path)
+                
+                if(process_directory(conn, directory_path)):
+                    movements, saldo_data, saldo = process_directory(conn, directory_path)
+                    header = movements[0]
+                    movements = movements[1:]
+                    # print(movements)
+                    for row_movements in movements:
+                        pocket.aggiungi_movement("", row_movements[0], row_movements[1], row_movements[2], row_movements[3], "", row_movements[4], "")
+
+                    for f in os.listdir(directory_path):
+                        if f.endswith('.csv'):
+                            add_movements_file(conn, f)
+
+            else:
+                continue
+
         
         if(tipo in ("TSK", "TASK")):
 
@@ -108,8 +150,8 @@ def main():
             elif(scelta in ("R", "REMOVE")):
                 mv_id = input("ID del movimento da RIMUOVERE: ")
                 pocket.remove_movement(mv_id)
-        else:
-             print("Scelta non valida, Riprova.")
+        # else:
+        #      print("Scelta non valida, Riprova.")
 
 
 if(__name__ == "__main__"):

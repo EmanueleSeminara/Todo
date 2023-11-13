@@ -3,13 +3,13 @@ from movement import Movement
 from os import system
 from db import connect_db, add_movement, get_all_movements, delete_movement
 class Pocket:
-    def __init__(self):
-        self.conn = connect_db()
+    def __init__(self, db_path):
+        self.conn = connect_db(db_path)
         self.movements = get_all_movements(self.conn)
         print(self.movements)
 
-    def aggiungi_movement(self, nome, data, category, amount, mv_type):
-        movement = Movement(nome, data, category, amount, mv_type)
+    def aggiungi_movement(self, nome, data_contabile, data_valuta, causale_abi, descrizione, category, amount, mv_type):
+        movement = Movement(nome, data_contabile, data_valuta, causale_abi, descrizione, category, amount, mv_type)
         add_movement(self.conn, movement)
         self.movements = get_all_movements(self.conn)
 

@@ -2,27 +2,30 @@
 from task import Task
 from os import system
 from db import connect_db, add_task, get_all_tasks, delete_task, edit_task, get_task
+from datetime import datetime
 
 class TodoList:
-    def __init__(self):
-        self.conn = connect_db()
+    def __init__(self, db_path):
+        self.conn = connect_db(db_path)
         self.tasks = get_all_tasks(self.conn)
         print(self.tasks)
 
     def aggiungi_task(self, nome, data, category):
+        data = datetime.strptime(data, "%Y-%m-%d")
+        print(data)
+        
         task = Task(nome, data, category)
         add_task(self.conn, task)
         self.tasks = get_all_tasks(self.conn)
 
     def mostra_task(self):
-        #tasks = get_all_tasks(self.conn)
         if not self.tasks:
             print(f"La lista delle attivita' e' vuota {self.tasks}.")
             return
 
-        print("{:<3} {:<30} {:<10} {:<10}".format("ID", "Nome", "Data", "Categoria"))
+        print("{:<3} {:<40} {:<8} {:<15}".format("ID", "Nome", "Data", "Categoria"))
         for task in self.tasks:
-            print("{:<3} {:<30} {:<10} {:<10}".format(task.id, task.name[:30], task.date, task.category))
+            print("{:<3} {:<40} {:<8} {:<15}".format(task.id, task.name[:30], task.date.strftime('%d/%m'), task.category))
 
     def remove_task(self, id):
         delete_task(self.conn,  id)
