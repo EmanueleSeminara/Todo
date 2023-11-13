@@ -157,7 +157,7 @@ def main():
                 task_id = input("Task id: ")
                 clear_screen()
                 print("----- Task in visualizzazione ------")
-                conn = connect_db()
+                conn = connect_db(db_path)
                 task_to_show = get_task(conn, task_id)
                 print(f"ID: {task_id}\nNome: {task_to_show.name}\nCategoria: {task_to_show.category}\nData: {task_to_show.date}\n\n")
                 #input("Premere invio per tornare al menu'")
@@ -167,7 +167,7 @@ def main():
             elif(scelta == "E" or scelta == "EDIT"):
                 task_id = input("Id del task da modificare: ")
                 clear_screen()
-                conn = connect_db()
+                conn = connect_db(db_path)
                 old_task = get_task(conn, task_id)
                 print("----- Task in modifica ------")
                 print(f"ID: {task_id}\nNome: {old_task.name}\nCategoria: {old_task.category}\nData: {old_task.date}\n\n")
