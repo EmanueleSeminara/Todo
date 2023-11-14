@@ -4,6 +4,7 @@ from os import system
 from db import connect_db, add_task, get_all_tasks, delete_task, edit_task, get_task
 from datetime import datetime
 import json
+from math import ceil
 
 
 class TodoList:
@@ -59,14 +60,14 @@ class TodoList:
         i = int(i)
         task_to_show = self.tasks[i : j]
         
-        print("------------------------------------------------------------------------------------")
-        print("| {:<3}|{:<40}|{:<12}|{:<22} |".format("ID", "Nome", "Data", "Categoria"))
-        print("------------------------------------------------------------------------------------")
+        print("----------------------------------------------------------------------------------------------------------------------------")
+        print("| {:<3}|{:<80}|{:<12}|{:<22} |".format("ID", "Nome", "Data", "Categoria"))
+        print("----------------------------------------------------------------------------------------------------------------------------")
         for task in task_to_show:
-            print(isinstance(task.date, str))
-            print("| {:<3}|{:<40}|{:<12}|{:<22} |".format(task.id, task.name[:30], task.date if isinstance(task.date, str) else task.date.strftime('%d%m'), task.category))
-        print("------------------------------------------------------------------------------------")
-        print(len(self.tasks))
+            print("| {:<3}|{:<80}|{:<12}|{:<22} |".format(task.id, task.name, task.date if isinstance(task.date, str) else task.date.strftime('%d%m'), task.category))
+        print("----------------------------------------------------------------------------------------------------------------------------")
+        print(f"| TOT: {len(self.tasks)} --------------------------------------------------------------------------------------------------------- {page + 1} di {ceil(len(self.tasks)/num_for_page)} |")
+
     def setRecordPage(self, tasks_record_number):
         # Nome del file JSON
         file_path = "config.json"
