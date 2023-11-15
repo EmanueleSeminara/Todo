@@ -6,7 +6,10 @@ class Task:
         self.name = name
         print(date)
         self.date = date if date is not None else None
-        self.category = int(category) if category is not None else None
+        try:
+            self.category = int(category) if category is not None else None
+        except:
+            self.category = category
 
     def set_id(self, id):
         self.id = id
