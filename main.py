@@ -152,8 +152,26 @@ def main():
                 print("----- Aggiunta nuovo task ------")
                 nome = input("Nome: ")
                 data = input("Data:: ")
-                category = input("Categoria: ")
-                todo_list.aggiungi_task(nome, data, category)
+                print(*todo_list.categories)
+                category_input = input("Categoria: ")
+
+                if any(category_input.upper() == category.name.upper() for category in todo_list.categories):
+                    print(f"La variabile '{category_input}' è contenuta nella lista di oggetti.")
+                else:
+                    print(f"La variabile '{category_input}' non è contenuta nella lista di oggetti.")
+                
+                found_category = next((category for category in todo_list.categories if category_input.upper() == category.name.upper()), None)
+
+                if(found_category):
+                    category_id = found_category.id
+                    print(f"La variabile '{category_input}' è contenuta nella lista di oggetti. ID della categoria: {category_id}")
+                else:
+                    category_id = None
+                    print(f"La variabile '{category_input}' non è contenuta nella lista di oggetti.")
+
+
+
+                todo_list.aggiungi_task(nome, data, category_id)
                 print("Task aggiunto con successo!")
                 input()
                 clear_screen()

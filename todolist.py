@@ -1,16 +1,18 @@
 # todolist.py
 from task import Task
 from os import system
-from db import connect_db, add_task, get_all_tasks, delete_task, edit_task, get_task
+from db import connect_db, add_task, get_all_tasks, delete_task, edit_task, get_task, get_all_categories
 from datetime import datetime
 import json
 from math import ceil
+from category import Category
 
 
 class TodoList:
     def __init__(self, db_path):
         self.conn = connect_db(db_path)
         self.tasks = get_all_tasks(self.conn)
+        self.categories = get_all_categories(self.conn)
         print(self.tasks)
         # Nome del file JSON
         file_path = "config.json"
@@ -26,11 +28,12 @@ class TodoList:
         # Stampa la costante
         print("TASKS_RECORD_PAGE:", TASKS_RECORD_PAGE)
 
-    def aggiungi_task(self, nome, data, category):
-        #data = datetime.strptime(data, "%Y-%m-%d")
+    def aggiungi_task(self, nome, data, category_id):
+        data = datetime.strptime(data, "%d/%m/%Y")
         print(data)
         
-        task = Task(nome, data, category)
+        task = Task(nome, data, category_id)
+        print(task)
         add_task(self.conn, task)
         self.tasks = get_all_tasks(self.conn)
 
@@ -63,13 +66,26 @@ class TodoList:
         i = int(i)
         task_to_show = self.tasks[i : j]
         
-        print("----------------------------------------------------------------------------------------------------------------------------")
-        print("| {:<3}|{:<80}|{:<12}|{:<22} |".format("ID", "Nome", "Data", "Categoria"))
-        print("----------------------------------------------------------------------------------------------------------------------------")
+        print("---------------------------------------------------------------------------------------------------------------------------------------")
+        print("| {:<3} | {:<80} | {:<17} | {:<22} |".format("ID", "Nome", "Data", "Categoria"))
+        print("---------------------------------------------------------------------------------------------------------------------------------------")
         for task in task_to_show:
-            print("| {:<3}|{:<80}|{:<12}|{:<22} |".format(task.id, task.name, task.date if isinstance(task.date, str) else task.date.strftime('%d%m'), task.category))
-        print("----------------------------------------------------------------------------------------------------------------------------")
-        print(f"| TOT: {len(self.tasks)} --------------------------------------------------------------------------------------------------------- {page + 1} di {ceil(len(self.tasks)/num_for_page)} |")
+            category_name = next((category_item.name for category_item in self.categories if category_item.id == task.category), "")
+            task_id = task.id if task.id is not None else ""
+            task_name = task.name if task.name is not None else ""
+            #task_date = task.date.strftime('%d%m') if isinstance(task.date, str) else task.date.strftime('%d%m') if task.date is not None else ""
+            if task.date:
+                if isinstance(task.date, datetime):
+                    task_date = task.date.strftime('%d/%m')
+                else:
+                    task_date = task.date
+            else:
+                task_date = ""
+
+
+            print("| {:<3} | {:<80} | {:<17} | {:<22} |".format(task_id, task_name, task_date, category_name))
+        print("---------------------------------------------------------------------------------------------------------------------------------------")
+        print(f"| TOT: {len(self.tasks)} -------------------------------------------------------------------------------------------------------------------- {page + 1} di {ceil(len(self.tasks)/num_for_page)} |")
 
     def setRecordPage(self, tasks_record_number):
         # Nome del file JSON

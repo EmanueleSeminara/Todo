@@ -5,6 +5,7 @@ from movement import Movement
 from datetime import datetime
 import os
 from utils import process_csv_file
+from category import Category
 
 
 def connect_db(db_path):
@@ -14,7 +15,7 @@ def connect_db(db_path):
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
             date TIMESTAMP,
-            category_id TEXT,
+            category_id INTEGER,
             stato TEXT,
             frequenza TEXT,
             priorita TEXT,
@@ -77,7 +78,7 @@ def connect_db(db_path):
     return conn
 
 def add_task(conn, task):
-    conn.execute("INSERT INTO tasks (name) VALUES (?)", (task.name,))
+    conn.execute("INSERT INTO tasks (name, date, category_id) VALUES (?, ?, ?)", (task.name, task.date, task.category))
     conn.commit()
 
 def get_all_tasks(conn):
@@ -216,7 +217,7 @@ def get_all_categories(conn):
     categories = cursor.fetchall()
     result = []
     for category_data in categories:
-        category = Movement(category_data[1], category_data[2], category_data[3], category_data[4], category_data[5], category_data[6], category_data[7], category_data[8])
+        category = Category(category_data[1])
         category.set_id(category_data[0])
         result.append(category)
     return result
