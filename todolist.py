@@ -27,7 +27,7 @@ class TodoList:
         print("TASKS_RECORD_PAGE:", TASKS_RECORD_PAGE)
 
     def aggiungi_task(self, nome, data, category):
-        data = datetime.strptime(data, "%Y-%m-%d")
+        #data = datetime.strptime(data, "%Y-%m-%d")
         print(data)
         
         task = Task(nome, data, category)
@@ -53,6 +53,9 @@ class TodoList:
         self.tasks = get_all_tasks(self.conn)
 
     def mostra_tasks_page(self, page, num_for_page = 3):
+        if not self.tasks:
+            print(f"La lista delle attivita' e' vuota {self.tasks}.")
+            return
         num_for_page = int(self.recordPageNumber)
         j = int(page) * int(num_for_page)
         page = int(page - 1)

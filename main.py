@@ -47,6 +47,10 @@ def help_message():
 def error_message():
     return "##### Usa help per visualizzare i comandi #####"
 
+def start_message():
+    return "##### Benvenuto su ToDo #####"
+
+
 
 
 
@@ -67,10 +71,12 @@ def main():
     while True:
         if(first):
             clear_screen()
+            print(start_message())
             first = False
         print("\nOption: [A]dd [L]ist [S]elect [R]emove [E]dit [H]elp [EX]it")
         scelta = input("> ").upper().split()
         tipo = ""
+        number_page = -1
 
         if(len(scelta) == 0):
             print(error_message())
@@ -81,7 +87,7 @@ def main():
             scelta = scelta[1]
         elif(len(scelta) == 3):
             tipo = scelta[0]
-            number_page = scelta[2]
+            number_page = int(scelta[2])
             scelta = scelta[1]
             
 
@@ -100,15 +106,18 @@ def main():
             print("3. Importa transazioni")
 
             scelta = input("> ").upper()
+            if scelta in ("EX", "EXIT") : continue
 
             if(scelta == "1"):
                 print(f"Valore attuale: {movements.recordPageNumber}")
                 num = input("Inserisci record per pagina: ")
+                if num in ("EX", "EXIT") : continue
                 print(num)
                 pocket.setRecordPage(num)
             elif(scelta == "2"):
                 print(f"Valore attuale: {todo_list.recordPageNumber}")
                 num = input("Inserisci record per pagina: ")
+                if num in ("EX", "EXIT") : continue
                 print(num)
                 todo_list.setRecordPage(num)
             elif(scelta == "3"):
@@ -146,10 +155,11 @@ def main():
                 print("Task aggiunto con successo!")
                 input()
                 clear_screen()
-            elif(scelta == "L" or scelta == "LIST" and number_page):
+            elif((scelta == "L" or scelta == "LIST") and number_page > 0):
                 clear_screen()
                 todo_list.mostra_tasks_page(int(number_page))
             elif(scelta == "L" or scelta == "LIST"):
+                print("CIAOOOO")
                 clear_screen()
                 todo_list.mostra_task()
                 #input()
@@ -164,8 +174,24 @@ def main():
             elif(scelta == "R" or scelta == "REMOVE"):
                 task_id = input("Inserire l'id del task da rimuovere: ")
                 todo_list.remove_task(task_id)
+            elif(scelta in ("E", "EDIT") and number_page > 0):
+                clear_screen()
+                task_id = input(f"----- MODIFICA TASK ID {number_page} -----")
+                print(f"Seleziona cosa modificare:\n1. Nome\n2. ")
+                conn = connect_db(db_path)
+                old_task = get_task(conn, task_id)
+                print("----- Task in modifica ------")
+                print(f"ID: {task_id}\nNome: {old_task.name}\nCategoria: {old_task.category}\nData: {old_task.date}\n\n")
+                task_name = input("Nome: ")
+                task_date = input("Data: ")
+                task_category = input("Categoria: ")
+                
+                new_task = Task(task_name, task_date, task_category)
+                new_task.set_id(task_id)
+                todo_list.mod_task(task_id, new_task)
             elif(scelta == "E" or scelta == "EDIT"):
                 task_id = input("Id del task da modificare: ")
+                if task_id in ("EX", "EXIT") : continue
                 clear_screen()
                 conn = connect_db(db_path)
                 old_task = get_task(conn, task_id)
@@ -178,6 +204,7 @@ def main():
                 new_task = Task(task_name, task_date, task_category)
                 new_task.set_id(task_id)
                 todo_list.mod_task(task_id, new_task)
+            
         elif(tipo in ("MV", "MOVEMENT")):
             if(scelta in ("A", "ADD")):
                 clear_screen()
@@ -191,8 +218,9 @@ def main():
                 print("Movimento aggiunto con successo!")
                 input()
                 clear_screen()
-            elif((scelta == "L" or scelta == "LIST") and number_page):
+            elif((scelta == "L" or scelta == "LIST") and number_page > 0):
                 clear_screen()
+                print(number_page)
                 pocket.mostra_movements_page(int(number_page))
             elif(scelta == "L" or scelta == "LIST"):
                 clear_screen()

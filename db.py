@@ -14,8 +14,18 @@ def connect_db(db_path):
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
             date TIMESTAMP,
-            category TEXT NOT NULL
+            category_id TEXT,
+            stato TEXT,
+            frequenza TEXT,
+            priorita TEXT,
+            FOREIGN KEY (category_id) REFERENCES categories(id)
+        )
+    ''')
 
+    conn.execute('''
+        CREATE TABLE IF NOT EXISTS categories (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL
         )
     ''')
     
@@ -39,10 +49,35 @@ def connect_db(db_path):
             file_name TEXT NOT NULL
         )
     ''')
+
+    conn.execute('''
+        CREATE TABLE IF NOT EXISTS goals (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL
+        )
+    ''')
+
+    conn.execute('''
+        CREATE TABLE IF NOT EXISTS person (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT,
+            surname TEXT,
+            phone TEXT,
+            email TEXT
+        )
+    ''')
+
+    conn.execute('''
+        CREATE TABLE IF NOT EXISTS ideas (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT
+        )
+    ''')
+
     return conn
 
 def add_task(conn, task):
-    conn.execute("INSERT INTO tasks (name, date, category) VALUES (?, ?, ?)", (task.name, task.date, task.category))
+    conn.execute("INSERT INTO tasks (name) VALUES (?)", (task.name,))
     conn.commit()
 
 def get_all_tasks(conn):
@@ -173,3 +208,15 @@ def add_movements_file(conn, file_name):
     #print(f"{movement.name} {movement.date} {movement.category} {movement.amount} {movement.type}")
     conn.execute("INSERT INTO movements_files (file_name) VALUES (?)", (file_name, ))
     conn.commit()
+
+# CATEGORIES
+
+def get_all_categories(conn):
+    cursor = conn.execute("SELECT * FROM categories")
+    categories = cursor.fetchall()
+    result = []
+    for category_data in categories:
+        category = Movement(category_data[1], category_data[2], category_data[3], category_data[4], category_data[5], category_data[6], category_data[7], category_data[8])
+        category.set_id(category_data[0])
+        result.append(category)
+    return result
