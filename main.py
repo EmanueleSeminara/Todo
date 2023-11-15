@@ -3,11 +3,12 @@ from todolist import TodoList
 from pocket import Pocket
 from os import system, name
 from task import Task
-from db import get_task, connect_db, process_directory, confronta_e_aggiorna, add_movements_file
+from db import get_task, connect_db, process_directory, confronta_e_aggiorna, add_movements_file, add_category
 from utils import rimuovi_vecchio_db
 import os, json
+from category import Category
 
-def start():
+def start(db_path):
     # Ottieni il percorso della directory del progetto
     project_directory = os.getcwd()
 
@@ -36,6 +37,9 @@ def start():
 
     print(f"Cartella 'temp' creata con successo nella directory del progetto: {temp_directory}")
     print(f"Cartella 'csv' creata con successo nella directory del progetto: {csv_directory}")
+    pippo = Category("Default")
+    conn = connect_db(db_path)
+    add_category(conn, pippo)
 
 
 
@@ -55,7 +59,7 @@ def start_message():
 
 
 def main():
-    start()
+    
 
     db_path = "todo.db"
     db_temp_path = "temp/temp.dp"
@@ -64,6 +68,7 @@ def main():
     new_db_path = db_temp_path
     confronta_e_aggiorna(old_db_path, new_db_path)
     rimuovi_vecchio_db(new_db_path)
+    start(db_path)
     todo_list = TodoList(db_path)
     pocket = Pocket(db_path)
     first = True
@@ -154,11 +159,6 @@ def main():
                 data = input("Data:: ")
                 print(*todo_list.categories)
                 category_input = input("Categoria: ")
-
-                if any(category_input.upper() == category.name.upper() for category in todo_list.categories):
-                    print(f"La variabile '{category_input}' è contenuta nella lista di oggetti.")
-                else:
-                    print(f"La variabile '{category_input}' non è contenuta nella lista di oggetti.")
                 
                 found_category = next((category for category in todo_list.categories if category_input.upper() == category.name.upper()), None)
 

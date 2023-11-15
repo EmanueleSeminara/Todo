@@ -13,7 +13,7 @@ def connect_db(db_path):
     conn.execute('''
         CREATE TABLE IF NOT EXISTS tasks (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
+            name TEXT,
             date TIMESTAMP,
             category_id INTEGER,
             stato TEXT,
@@ -78,7 +78,7 @@ def connect_db(db_path):
     return conn
 
 def add_task(conn, task):
-    conn.execute("INSERT INTO tasks (name, date, category_id) VALUES (?, ?, ?)", (task.name, task.date, task.category))
+    conn.execute("INSERT INTO tasks (name, date, category_id) VALUES (?, ?, ?)", (task.name, task.date, task.category if task.category is not None else 1))
     conn.commit()
 
 def get_all_tasks(conn):
@@ -221,3 +221,8 @@ def get_all_categories(conn):
         category.set_id(category_data[0])
         result.append(category)
     return result
+
+def add_category(conn, category):
+    #print(f"{movement.name} {movement.date} {movement.category} {movement.amount} {movement.type}")
+    conn.execute("INSERT INTO categories (name) VALUES (?)", (category.name, ))
+    conn.commit()
