@@ -56,15 +56,15 @@ class Pocket:
         page = int(page - 1)
         i = page if page == 0 else page * num_for_page
         i = int(i)
-        mv_to_show = self.movements[i : j]
-
-        sorted_tasks = sorted(mv_to_show, key=lambda x: x.data_contabile)
+        sorted_tasks = sorted(self.movements, key=lambda x: x.data_contabile)
         amount_sum = sum(float(task.amount.replace('.', '').replace(',', '.')) for task in self.movements)
+
+        mv_to_show = sorted_tasks[i : j]
         
         print("--------------------------------------------------------------------------------------------------------------------")
         print("| {:<3} | {:<30} | {:<17} | {:<17} | {:<15} | {:<12} | {:<15} |".format("ID", "Nome", "Data contabile", "data_valuta", "Categoria", "Cifra", "Tipologia"))
         print("--------------------------------------------------------------------------------------------------------------------")
-        for movement in sorted_tasks:
+        for movement in mv_to_show:
             print("| {:<3} | {:<30} | {:<17} | {:<17} | {:<15} | {:<12} | {:<15} |".format(movement.id, movement.name[:30], movement.data_contabile, movement.data_valuta, movement.category, movement.amount, movement.type))
             
            # print(f"Name: {movement.name}\namount: {movement.amount}\nid: {movement.id}\ndata contabile: {movement.data_contabile}\ndata valuta:{movement.data_valuta}\ncategory: {movement.category}\ntype: {movement.type}")
