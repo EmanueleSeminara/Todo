@@ -117,7 +117,7 @@ def add_movement(conn, movement):
     conn.commit()
 
 def get_all_movements(conn):
-    cursor = conn.execute("SELECT * FROM movements")
+    cursor = conn.execute("SELECT id, name, data_contabile, data_valuta, causale_abi, descrizione, category, amount, type FROM movements")
     movements = cursor.fetchall()
     result = []
     for movement_data in movements:

@@ -133,6 +133,8 @@ def main():
                     movements = movements[1:]
                     # print(movements)
                     for row_movements in movements:
+                        print(f"{row_movements}")
+                       # exit()
                         pocket.aggiungi_movement("", row_movements[0], row_movements[1], row_movements[2], row_movements[3], "", row_movements[4], "")
 
                     for f in os.listdir(directory_path):

@@ -27,7 +27,9 @@ class Pocket:
         print("MOVEMENTS_RECORD_PAGE:", MOVEMENTS_RECORD_PAGE)
 
     def aggiungi_movement(self, nome, data_contabile, data_valuta, causale_abi, descrizione, category, amount, mv_type):
+        print(f"{data_contabile} - {amount}")
         movement = Movement(nome, data_contabile, data_valuta, causale_abi, descrizione, category, amount, mv_type)
+        print(movement.amount)
         add_movement(self.conn, movement)
         self.movements = get_all_movements(self.conn)
 
@@ -61,6 +63,7 @@ class Pocket:
         print("--------------------------------------------------------------------------------------------------------------------")
         for movement in mv_to_show:
             print("|{:<3}|{:<30}|{:<17}|{:<17}|{:<15}|{:<12}|{:<15}|".format(movement.id, movement.name[:30], movement.data_contabile, movement.data_valuta, movement.category, movement.amount, movement.type))
+           # print(f"Name: {movement.name}\namount: {movement.amount}\nid: {movement.id}\ndata contabile: {movement.data_contabile}\ndata valuta:{movement.data_valuta}\ncategory: {movement.category}\ntype: {movement.type}")
         print("--------------------------------------------------------------------------------------------------------------------")
         print(f"| TOT: {len(self.movements)} ------------------------------------------------------------------------------------------------- {page + 1} di {ceil(len(self.movements)/num_for_page)} |")
 
