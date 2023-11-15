@@ -13,6 +13,20 @@ class TodoList:
         self.conn = connect_db(db_path)
         self.tasks = get_all_tasks(self.conn)
         self.categories = get_all_categories(self.conn)
+        self.months_dict = {
+                                1: 'Gennaio',
+                                2: 'Febbraio',
+                                3: 'Marzo',
+                                4: 'Aprile',
+                                5: 'Maggio',
+                                6: 'Giugno',
+                                7: 'Luglio',
+                                8: 'Agosto',
+                                9: 'Settembre',
+                                10: 'Ottobre',
+                                11: 'Novembre',
+                                12: 'Dicembre'
+                            }
         print(self.tasks)
         # Nome del file JSON
         file_path = "config.json"
@@ -64,7 +78,10 @@ class TodoList:
         page = int(page - 1)
         i = page if page == 0 else page * num_for_page
         i = int(i)
-        task_to_show = self.tasks[i : j]
+
+        sorted_tasks = sorted(self.tasks, key=lambda x: x.date)
+
+        task_to_show = sorted_tasks[i : j]
         
         print("---------------------------------------------------------------------------------------------------------------------------------------")
         print("| {:<3} | {:<80} | {:<17} | {:<22} |".format("ID", "Nome", "Data", "Categoria"))
@@ -76,7 +93,7 @@ class TodoList:
             #task_date = task.date.strftime('%d%m') if isinstance(task.date, str) else task.date.strftime('%d%m') if task.date is not None else ""
             if task.date:
                 if isinstance(task.date, datetime):
-                    task_date = task.date.strftime('%d/%m')
+                    task_date = f"{task.date.strftime('%d')} {self.months_dict[int(task.date.strftime('%m'))]} {task.date.strftime('%y')}"
                 else:
                     task_date = task.date
             else:
@@ -85,7 +102,8 @@ class TodoList:
 
             print("| {:<3} | {:<80} | {:<17} | {:<22} |".format(task_id, task_name, task_date, category_name))
         print("---------------------------------------------------------------------------------------------------------------------------------------")
-        print(f"| TOT: {len(self.tasks)} -------------------------------------------------------------------------------------------------------------------- {page + 1} di {ceil(len(self.tasks)/num_for_page)} |")
+        print("| {:<3}{:<80}       {:<17}{:>22} |".format("TOT: ", str(len(self.tasks)) + " |", "", "| " + str(page + 1) + " di " + str(ceil(len(self.tasks)/num_for_page))))
+        print("---------------------------------------------------------------------------------------------------------------------------------------")
 
     def setRecordPage(self, tasks_record_number):
         # Nome del file JSON
