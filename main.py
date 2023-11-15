@@ -3,7 +3,7 @@ from todolist import TodoList
 from pocket import Pocket
 from os import system, name
 from task import Task
-from db import get_task, connect_db, process_directory, confronta_e_aggiorna, add_movements_file, add_category
+from db import get_task, connect_db, process_directory, confronta_e_aggiorna, add_movements_file, add_category, get_category_by_name
 from utils import rimuovi_vecchio_db
 import os, json
 from category import Category
@@ -37,9 +37,15 @@ def start(db_path):
 
     print(f"Cartella 'temp' creata con successo nella directory del progetto: {temp_directory}")
     print(f"Cartella 'csv' creata con successo nella directory del progetto: {csv_directory}")
-    pippo = Category("Default")
     conn = connect_db(db_path)
-    add_category(conn, pippo)
+
+    # Verifica se la categoria "Default" è già presente prima di aggiungerla
+    existing_category = get_category_by_name(conn, "Default")
+
+    if existing_category is None:
+        add_category(conn, Category("Default"))
+    else:
+        print("La categoria 'Default' è già presente.")
 
 
 

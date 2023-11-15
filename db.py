@@ -226,3 +226,15 @@ def add_category(conn, category):
     #print(f"{movement.name} {movement.date} {movement.category} {movement.amount} {movement.type}")
     conn.execute("INSERT INTO categories (name) VALUES (?)", (category.name, ))
     conn.commit()
+
+def get_category_by_name(conn, name):
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM categories WHERE name = ?", (name,))
+    category_data = cursor.fetchone()
+    cursor.close()
+
+    if category_data:
+        category = Category(category_data[1])  # Assuming the name is in the second column
+        return category
+    else:
+        return None
