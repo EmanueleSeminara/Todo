@@ -143,7 +143,8 @@ def check_file_exists(conn, file_name):
 
 def process_directory(conn, directory_path):
     # Ottieni la lista di file nella directory
-    files = [f for f in os.listdir(directory_path) if f.endswith('.csv')]
+    files = [f for f in os.listdir(".\csv") if f.upper().endswith('.CSV')]
+    # print(files)
 
     for file in files:
         file_path = os.path.join(directory_path, file)
@@ -151,6 +152,8 @@ def process_directory(conn, directory_path):
         # Verifica se il file è già presente nel database
         if not check_file_exists(conn, file):
             # Se il file non è presente, elabora il file CSV e inserisci nel database
+            print(f"File '{file}' non presente nel database.")
+            add_movements_file(conn, file)
             return process_csv_file(file_path)
             
         else:

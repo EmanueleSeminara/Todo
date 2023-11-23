@@ -144,13 +144,13 @@ def main():
                     movements = movements[1:]
                     # print(movements)
                     for row_movements in movements:
-                        print(f"{row_movements}")
+                        #print(f"{row_movements}")
                        # exit()
                         pocket.aggiungi_movement("", row_movements[0], row_movements[1], row_movements[2], row_movements[3], "", row_movements[4], "")
 
-                    for f in os.listdir(directory_path):
-                        if f.endswith('.csv'):
-                            add_movements_file(conn, f)
+                    # for f in os.listdir(directory_path):
+                    #     if f.upper().endswith('.CSV'):
+                    #         add_movements_file(conn, f)
 
             else:
                 continue
@@ -167,6 +167,7 @@ def main():
                 category_input = input("Categoria: ")
                 
                 found_category = next((category for category in todo_list.categories if category_input.upper() == category.name.upper()), None)
+                print(todo_list.categories)
 
                 if(found_category):
                     category_id = found_category.id
