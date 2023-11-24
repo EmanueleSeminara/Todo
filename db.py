@@ -101,20 +101,34 @@ def delete_task(conn, id):
     conn.commit()
 
 def edit_task(conn, task):
-    conn.execute("UPDATE tasks SET name = ?, date = ?, category = ? WHERE id = ?", (task.name, task.date, task.category, task.id))
+    conn.execute("UPDATE tasks SET name = ?, date = ?, category_id = ? WHERE id = ?", (task.name, task.date, task.category if task.category is not None else 1, task.id))
     conn.commit()
 
 def get_task(conn, edit_task_id):
     cursor = conn.execute("SELECT * FROM tasks WHERE id = ?", (edit_task_id,))
     task_data = cursor.fetchone()
-    result = Task(task_data[1], task_data[2], task_data[3])
-    result.set_id(edit_task_id)
-    return result
+    if(task_data is not None):
+        result = Task(task_data[1], task_data[2], task_data[3])
+        result.set_id(edit_task_id)
+        return result
+    return None
+
+def clean_tasks(conn):
+    conn.execute("DELETE FROM tasks;")
+    conn.commit()
 
 # MOVEMENTS
 def add_movement(conn, movement):
     #print(f"{movement.name} {movement.date} {movement.category} {movement.amount} {movement.type}")
     conn.execute("INSERT INTO movements (name, data_contabile, data_valuta, causale_abi, descrizione, category, amount, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (movement.name, movement.data_contabile, movement.data_valuta, movement.causale_abi, movement.descrizione, movement.category, movement.amount, movement.type))
+    conn.commit()
+
+def clean_movements(conn):
+    conn.execute("DELETE FROM movements;")
+    conn.commit()
+
+def clean_movements_files(conn):
+    conn.execute("DELETE FROM movements_files;")
     conn.commit()
 
 def get_all_movements(conn):
@@ -133,31 +147,42 @@ def delete_movement(conn, id):
 
 
 def check_file_exists(conn, file_name):
-    print(file_name)
+    #print(file_name)
     query = "SELECT COUNT(*) FROM movements_files WHERE file_name = ?"
     cursor = conn.execute(query, (file_name,))
     result = cursor.fetchall()[0][0]
 
-    print(result)
+    #print(result)
     return result > 0
 
 def process_directory(conn, directory_path):
     # Ottieni la lista di file nella directory
-    files = [f for f in os.listdir(".\csv") if f.upper().endswith('.CSV')]
-    # print(files)
+    files = [f for f in os.listdir("./csv") if f.upper().endswith('.CSV')]
+    #print(files)
+    result_movements = []
+    result_saldo_data = ""
+    result_saldo = ""
 
-    for file in files:
+
+    for i, file in enumerate(files):
+        #print(f"FILE: {file}")
         file_path = os.path.join(directory_path, file)
+
 
         # Verifica se il file è già presente nel database
         if not check_file_exists(conn, file):
             # Se il file non è presente, elabora il file CSV e inserisci nel database
             print(f"File '{file}' non presente nel database.")
             add_movements_file(conn, file)
-            return process_csv_file(file_path)
-            
+            movements, saldo_data, saldo = process_csv_file(file_path)
+            #print(type(movements))
+            if(i > 0):
+                movements = movements[1:]
+            result_movements.extend(movements)
         else:
             print(f"File '{file}' già presente nel database.")
+    
+    return result_movements, result_saldo_data, result_saldo
 
 
 def confronta_e_aggiorna(old_db_path, new_db_path):

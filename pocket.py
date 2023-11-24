@@ -1,7 +1,7 @@
 # pocket.py
 from movement import Movement
 from os import system
-from db import connect_db, add_movement, get_all_movements, delete_movement, get_all_categories
+from db import connect_db, add_movement, get_all_movements, delete_movement, get_all_categories, clean_movements, clean_movements_files
 import json
 from math import ceil
 
@@ -27,9 +27,9 @@ class Pocket:
         print("MOVEMENTS_RECORD_PAGE:", MOVEMENTS_RECORD_PAGE)
 
     def aggiungi_movement(self, nome, data_contabile, data_valuta, causale_abi, descrizione, category, amount, mv_type):
-        print(f"{data_contabile} - {amount}")
+        #print(f"{data_contabile} - {amount}")
         movement = Movement(nome, data_contabile, data_valuta, causale_abi, descrizione, category, amount, mv_type)
-        print(movement.amount)
+        #print(movement.amount)
         add_movement(self.conn, movement)
         self.movements = get_all_movements(self.conn)
 
@@ -56,10 +56,18 @@ class Pocket:
         page = int(page - 1)
         i = page if page == 0 else page * num_for_page
         i = int(i)
-        sorted_tasks = sorted(self.movements, key=lambda x: x.data_contabile)
-        amount_sum = sum(float(task.amount.replace('.', '').replace(',', '.')) for task in self.movements)
+        sorted_movements = sorted(self.movements, key=lambda x: x.data_contabile)
+        somma = 0
 
-        mv_to_show = sorted_tasks[i : j]
+        amount_sum = sum(
+            float(movement.amount.replace('.', '').replace(',', '.')) 
+            if movement and movement.amount 
+            else 0
+            for movement in self.movements
+        )
+
+
+        mv_to_show = sorted_movements[i : j]
         
         print("--------------------------------------------------------------------------------------------------------------------")
         print("| {:<3} | {:<30} | {:<17} | {:<17} | {:<15} | {:<12} | {:<15} |".format("ID", "Nome", "Data contabile", "data_valuta", "Categoria", "Cifra", "Tipologia"))
@@ -89,5 +97,10 @@ class Pocket:
 
         print("File JSON aggiornato con successo.")
 
-def get_categories(self):
-    return self.categories
+    def get_categories(self):
+        return self.categories
+
+    def clean_all(self):
+        clean_movements(self.conn)
+        clean_movements_files(self.conn)
+        self.movements = []

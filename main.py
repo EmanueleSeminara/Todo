@@ -7,6 +7,7 @@ from db import get_task, connect_db, process_directory, confronta_e_aggiorna, ad
 from utils import rimuovi_vecchio_db
 import os, json
 from category import Category
+from datetime import datetime
 
 def start(db_path):
     # Ottieni il percorso della directory del progetto
@@ -115,6 +116,8 @@ def main():
             print("1. Record per pagina Movimenti")
             print("2. Record per pagina Tasks")
             print("3. Importa transazioni")
+            print("4. Pulisci movimenti")
+            print("5. Pulisci task")
 
             scelta = input("> ").upper()
             if scelta in ("EX", "EXIT") : continue
@@ -132,25 +135,25 @@ def main():
                 print(num)
                 todo_list.setRecordPage(num)
             elif(scelta == "3"):
-                path = "./csv" # input("Path: ").upper()
-                print(path)
-                # Esempio: Sostituisci 'path_della_tua_directory' con il percorso della tua directory
+                path = "./csv"
                 directory_path = path
                 conn = connect_db(db_path)
-                
-                if(process_directory(conn, directory_path)):
-                    movements, saldo_data, saldo = process_directory(conn, directory_path)
+                movements, saldo_data, saldo = process_directory(conn, directory_path)
+                if(movements):
                     header = movements[0]
                     movements = movements[1:]
-                    # print(movements)
                     for row_movements in movements:
-                        #print(f"{row_movements}")
-                       # exit()
                         pocket.aggiungi_movement("", row_movements[0], row_movements[1], row_movements[2], row_movements[3], "", row_movements[4], "")
-
-                    # for f in os.listdir(directory_path):
-                    #     if f.upper().endswith('.CSV'):
-                    #         add_movements_file(conn, f)
+            elif(scelta == "4"):
+                confirm = input("Sei sicuro di voler eliminare tutti i movimenti: ")
+                if confirm in ("EX", "EXIT") : continue
+                if(confirm.upper() in ("Y", "YES")):
+                    pocket.clean_all()
+            elif(scelta == "5"):
+                confirm = input("Sei sicuro di voler eliminare tutti i tasks: ")
+                if confirm in ("EX", "EXIT") : continue
+                if(confirm.upper() in ("Y", "YES")):
+                    todo_list.clean_all()
 
             else:
                 continue
@@ -165,19 +168,14 @@ def main():
                 data = input("Data:: ")
                 print(*todo_list.categories)
                 category_input = input("Categoria: ")
-                
                 found_category = next((category for category in todo_list.categories if category_input.upper() == category.name.upper()), None)
-                print(todo_list.categories)
-
                 if(found_category):
                     category_id = found_category.id
                     print(f"La variabile '{category_input}' è contenuta nella lista di oggetti. ID della categoria: {category_id}")
                 else:
                     category_id = None
                     print(f"La variabile '{category_input}' non è contenuta nella lista di oggetti.")
-
-
-
+                    # prevedere aggiunta nuova categoria se non presente
                 todo_list.aggiungi_task(nome, data, category_id)
                 print("Task aggiunto con successo!")
                 input()
@@ -203,19 +201,41 @@ def main():
                 todo_list.remove_task(task_id)
             elif(scelta in ("E", "EDIT") and number_page > 0):
                 clear_screen()
-                task_id = input(f"----- MODIFICA TASK ID {number_page} -----")
-                print(f"Seleziona cosa modificare:\n1. Nome\n2. ")
                 conn = connect_db(db_path)
-                old_task = get_task(conn, task_id)
-                print("----- Task in modifica ------")
-                print(f"ID: {task_id}\nNome: {old_task.name}\nCategoria: {old_task.category}\nData: {old_task.date}\n\n")
-                task_name = input("Nome: ")
-                task_date = input("Data: ")
-                task_category = input("Categoria: ")
+                old_task = get_task(conn, number_page)
+                if(old_task is not None):
+                    real_category = next((category for category in todo_list.categories if old_task.category == category.id), None)
+                    real_date = f"{old_task.date.strftime('%d')} {todo_list.months_dict[int(old_task.date.strftime('%m'))]} {old_task.date.strftime('%y')}"
+                    print(f"----- MODIFICA TASK ID {number_page} -----")
+                    print(f"ID: {number_page}\nNome: {old_task.name}\nCategoria: {real_category}\nData: {real_date}\n\n")
+                    print(f"Seleziona cosa modificare:\n1. Nome\n2. Categoria\n3. Data\n")
+                    
+                    resp = input("> ")
+                    if(resp == '1'):
+                        task_name = input("Nome: ")
+                        new_task = Task(task_name, old_task.date, old_task.category)
+                    elif(resp == '2'):
+                        print(*todo_list.categories)
+                        category_input = input("Categoria: ")
                 
-                new_task = Task(task_name, task_date, task_category)
-                new_task.set_id(task_id)
-                todo_list.mod_task(task_id, new_task)
+                        found_category = next((category for category in todo_list.categories if category_input.upper() == category.name.upper()), None)
+                        if(found_category):
+                            category_id = found_category.id
+                            print(f"La variabile '{category_input}' è contenuta nella lista di oggetti. ID della categoria: {category_id}")
+                        else:
+                            category_id = None
+                            print(f"La variabile '{category_input}' non è contenuta nella lista di oggetti.")
+                            # prevedere aggiunta nuova categoria se non presente
+                        new_task = Task(old_task.name, old_task.date, category_id)
+                    elif(resp == '3'):
+                        task_date = input("Data: ")
+                        task_date = datetime.strptime(task_date, "%d/%m/%Y")
+                        new_task = Task(old_task.name, task_date, old_task.category)
+                    
+                    
+
+                    new_task.set_id(number_page)
+                    todo_list.mod_task(number_page, new_task)
             elif(scelta == "E" or scelta == "EDIT"):
                 task_id = input("Id del task da modificare: ")
                 if task_id in ("EX", "EXIT") : continue

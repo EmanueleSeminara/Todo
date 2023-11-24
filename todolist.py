@@ -1,7 +1,7 @@
 # todolist.py
 from task import Task
 from os import system
-from db import connect_db, add_task, get_all_tasks, delete_task, edit_task, get_task, get_all_categories
+from db import connect_db, add_task, get_all_tasks, delete_task, edit_task, get_task, get_all_categories, clean_tasks
 from datetime import datetime
 import json
 from math import ceil
@@ -121,3 +121,7 @@ class TodoList:
             json.dump(data, json_file, indent=2)
 
         print("File JSON aggiornato con successo.")
+
+    def clean_all(self):
+        clean_tasks(self.conn)
+        self.tasks = []
