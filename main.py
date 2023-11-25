@@ -8,6 +8,11 @@ from utils import rimuovi_vecchio_db
 import os, json
 from category import Category
 from datetime import datetime
+import readline
+import rlcompleter
+
+
+
 
 def start(db_path):
     # Ottieni il percorso della directory del progetto
@@ -62,9 +67,6 @@ def start_message():
     return "##### Benvenuto su ToDo #####"
 
 
-
-
-
 def main():
     
 
@@ -79,6 +81,9 @@ def main():
     todo_list = TodoList(db_path)
     pocket = Pocket(db_path)
     first = True
+    #readline.parse_and_bind("tab: complete")
+    #readline.parse_and_bind("bind ^I rl_complete")
+    readline.set_history_length(1000)
 
     while True:
         if(first):
