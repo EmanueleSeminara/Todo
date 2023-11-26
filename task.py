@@ -4,7 +4,7 @@ from datetime import datetime
 class Task:
     def __init__(self, name, date, category):
         self.name = name
-        print(date)
+        #print(date)
         self.date = date if date is not None else None
         try:
             self.category = int(category) if category is not None else None

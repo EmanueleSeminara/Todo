@@ -52,12 +52,14 @@ class Pocket:
             print(f"La lista dei movimenti e' vuota {self.movements}.")
             return
         num_for_page = int(self.recordPageNumber)
+        if(page > ceil(len(self.movements)/num_for_page)):
+            print(f"Pagina richiesta non presente.")
+            return
         j = int(page) * int(num_for_page)
         page = int(page - 1)
         i = page if page == 0 else page * num_for_page
         i = int(i)
         sorted_movements = sorted(self.movements, key=lambda x: x.data_contabile)
-        somma = 0
 
         amount_sum = sum(
             float(movement.amount.replace('.', '').replace(',', '.')) 
@@ -69,16 +71,15 @@ class Pocket:
 
         mv_to_show = sorted_movements[i : j]
         
-        print("--------------------------------------------------------------------------------------------------------------------")
-        print("| {:<3} | {:<30} | {:<17} | {:<17} | {:<15} | {:<12} | {:<15} |".format("ID", "Nome", "Data contabile", "data_valuta", "Categoria", "Cifra", "Tipologia"))
-        print("--------------------------------------------------------------------------------------------------------------------")
+        print("{:<131}".format("-" * 131))
+        print("| {:^3} | {:^30} | {:^17} | {:^17} | {:^15} | {:^12} | {:^15} |".format("ID", "Nome", "Data contabile", "data_valuta", "Categoria", "Cifra", "Tipologia"))
+        print("{:<131}".format("-" * 131))
         for movement in mv_to_show:
-            print("| {:<3} | {:<30} | {:<17} | {:<17} | {:<15} | {:<12} | {:<15} |".format(movement.id, movement.name[:30], movement.data_contabile, movement.data_valuta, movement.category, movement.amount, movement.type))
+            print("| {:^3} | {:^30} | {:^17} | {:^17} | {:^15} | {:^12} | {:^15} |".format(movement.id, movement.name[:30], movement.data_contabile, movement.data_valuta, movement.category, movement.amount, movement.type))
             
-           # print(f"Name: {movement.name}\namount: {movement.amount}\nid: {movement.id}\ndata contabile: {movement.data_contabile}\ndata valuta:{movement.data_valuta}\ncategory: {movement.category}\ntype: {movement.type}")
-        print("--------------------------------------------------------------------------------------------------------------------")
-        print("| {:<3}{:<30} | {:<17} | {:<17} | {:<15} | {:<12} | {:<15} |".format("TOT:", len(self.movements), "-----------", "--------", "-----", "{:.2f}".format(amount_sum), str(page + 1) + " di " + str(ceil(len(self.movements)/num_for_page))))
-
+        print("{:<131}".format("-" * 131))
+        print("| {:<42}{:^43}{:>42} |".format(f"TOT: {len(self.movements)}", "Pagina " + str(page + 1) + " di " + str(ceil(len(self.movements)/num_for_page)), "SOMMA MOVIMENTI: {:.2f}".format(amount_sum)))
+        print("{:<131}".format("-" * 131))
 
     def setRecordPage(self, movements_record_number):
         # Nome del file JSON

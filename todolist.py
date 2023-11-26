@@ -27,7 +27,7 @@ class TodoList:
                                 11: 'Novembre',
                                 12: 'Dicembre'
                             }
-        print(self.tasks)
+        #print(self.tasks)
         # Nome del file JSON
         file_path = "config.json"
 
@@ -74,6 +74,10 @@ class TodoList:
             print(f"La lista delle attivita' e' vuota {self.tasks}.")
             return
         num_for_page = int(self.recordPageNumber)
+        if(page > ceil(len(self.tasks)/num_for_page)):
+            print(f"Pagina richiesta non presente.")
+            return
+        
         j = int(page) * int(num_for_page)
         page = int(page - 1)
         i = page if page == 0 else page * num_for_page
@@ -83,9 +87,9 @@ class TodoList:
 
         task_to_show = sorted_tasks[i : j]
         
-        print("---------------------------------------------------------------------------------------------------------------------------------------")
-        print("| {:<3} | {:<80} | {:<17} | {:<22} |".format("ID", "Nome", "Data", "Categoria"))
-        print("---------------------------------------------------------------------------------------------------------------------------------------")
+        print("{:<135}".format("-" * 135))
+        print("| {:^3} | {:^80} | {:^17} | {:^22} |".format("ID", "Nome", "Data", "Categoria"))
+        print("{:<135}".format("-" * 135))
         for task in task_to_show:
             category_name = next((category_item.name for category_item in self.categories if category_item.id == task.category), "")
             task_id = task.id if task.id is not None else ""
@@ -100,10 +104,10 @@ class TodoList:
                 task_date = ""
 
 
-            print("| {:<3} | {:<80} | {:<17} | {:<22} |".format(task_id, task_name, task_date, category_name))
-        print("---------------------------------------------------------------------------------------------------------------------------------------")
-        print("| {:<3}{:<80}       {:<17}{:>22} |".format("TOT: ", str(len(self.tasks)) + " |", "", "| " + str(page + 1) + " di " + str(ceil(len(self.tasks)/num_for_page))))
-        print("---------------------------------------------------------------------------------------------------------------------------------------")
+            print("| {:^3} | {:^80} | {:^17} | {:^22} |".format(task_id, task_name, task_date, category_name))
+        print("{:<135}".format("-" * 135))
+        print("| {:<44}{:^44}{:>43} |".format(f"TOT: {len(self.tasks)}", "Pagina " + str(page + 1) + " di " + str(ceil(len(self.tasks)/num_for_page)), ""))
+        print("{:<135}".format("-" * 135))
 
     def setRecordPage(self, tasks_record_number):
         # Nome del file JSON
@@ -125,3 +129,6 @@ class TodoList:
     def clean_all(self):
         clean_tasks(self.conn)
         self.tasks = []
+    
+    def get_task(self, task_id):
+        return get_task(self.conn, task_id)
