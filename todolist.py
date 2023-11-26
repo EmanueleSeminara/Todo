@@ -104,7 +104,7 @@ class TodoList:
                 task_date = ""
 
 
-            print("| {:^3} | {:^80} | {:^17} | {:^22} |".format(task_id, task_name, task_date, category_name))
+            print("| {:^3} | {:<80} | {:^17} | {:^22} |".format(task_id, task_name, task_date, category_name))
         print("{:<135}".format("-" * 135))
         print("| {:<44}{:^44}{:>43} |".format(f"TOT: {len(self.tasks)}", "Pagina " + str(page + 1) + " di " + str(ceil(len(self.tasks)/num_for_page)), ""))
         print("{:<135}".format("-" * 135))
