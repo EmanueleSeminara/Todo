@@ -11,7 +11,6 @@ class Pocket:
         self.conn = connect_db(db_path)
         self.movements = get_all_movements(self.conn)
         self.categories = get_all_categories(self.conn)
-        print(self.movements)
         # Nome del file JSON
         file_path = "config.json"
 
@@ -59,7 +58,7 @@ class Pocket:
         page = int(page - 1)
         i = page if page == 0 else page * num_for_page
         i = int(i)
-        sorted_movements = sorted(self.movements, key=lambda x: x.data_contabile)
+        sorted_movements = sorted(self.movements, key=lambda x: x.data_valuta)
 
         amount_sum = sum(
             float(movement.amount.replace('.', '').replace(',', '.')) 
@@ -72,11 +71,12 @@ class Pocket:
         mv_to_show = sorted_movements[i : j]
         
         print("{:<131}".format("-" * 131))
-        print("| {:^3} | {:^30} | {:^17} | {:^17} | {:^15} | {:^12} | {:^15} |".format("ID", "Nome", "Data contabile", "data_valuta", "Categoria", "Cifra", "Tipologia"))
+        print("| {:^3} | {:^30} | {:^17} | {:^17} | {:^15} | {:^12} | {:^15} |".format("ID", "Nome", "Data contabile", "Data valuta", "Categoria", "Cifra", "Tipologia"))
         print("{:<131}".format("-" * 131))
+        print(mv_to_show[0].data_contabile)
         for movement in mv_to_show:
-            print("| {:^3} | {:^30} | {:^17} | {:^17} | {:^15} | {:^12} | {:^15} |".format(movement.id, movement.name[:30], movement.data_contabile, movement.data_valuta, movement.category, movement.amount, movement.type))
-            
+            #print("| {:^3} | {:^30} | {:^17} | {:^17} | {:^15} | {:^12} | {:^15} |".format(movement.id, movement.name[:30], movement.data_contabile, movement.data_valuta, movement.category, movement.amount, movement.type))
+            print("| {:^3} | {:^30} | {:^17} | {:^17} | {:^15} | {:^12} | {:^15} |".format(movement.id, movement.data_contabile, movement.data_contabile, "asd", "asd", "asd", "asd"))
         print("{:<131}".format("-" * 131))
         print("| {:<42}{:^43}{:>42} |".format(f"TOT: {len(self.movements)}", "Pagina " + str(page + 1) + " di " + str(ceil(len(self.movements)/num_for_page)), "SOMMA MOVIMENTI: {:.2f}".format(amount_sum)))
         print("{:<131}".format("-" * 131))
@@ -105,3 +105,10 @@ class Pocket:
         clean_movements(self.conn)
         clean_movements_files(self.conn)
         self.movements = []
+    
+    def stats_movements(self, year):
+        print("CIAO")
+        stats_movements = []
+        for movement in self.movements:
+            if(movement.data_valuta):
+                pass

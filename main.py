@@ -8,8 +8,10 @@ from utils import rimuovi_vecchio_db
 import os, json
 from category import Category
 from datetime import datetime
-import readline
-import rlcompleter
+from prompt_toolkit import prompt
+from prompt_toolkit.history import InMemoryHistory
+
+
 
 
 def start():
@@ -79,9 +81,7 @@ def main():
     todo_list = TodoList(db_path)
     pocket = Pocket(db_path)
     first = True
-    #readline.parse_and_bind("tab: complete")
-    #readline.parse_and_bind("bind ^I rl_complete")
-    readline.set_history_length(1000)
+    history = InMemoryHistory()
 
     while True:
         if(first):
@@ -89,7 +89,7 @@ def main():
             print(start_message())
             first = False
         print("\nOption: [A]dd [L]ist [S]elect [R]emove [E]dit [H]elp [EX]it")
-        scelta = input("> ").upper().split()
+        scelta = prompt('> ', history=history).upper().split()
         tipo = ""
         number_page = -1
 
@@ -157,11 +157,9 @@ def main():
                     todo_list.clean_all()
             else:
                 continue
-        else:
-            clear_screen()
-            print(error_message())
+        
 
-        if(tipo in ("TSK", "TASK")):
+        elif(tipo in ("TSK", "TASK")):
 
             if(scelta in ("A", "ADD")):
                 clear_screen()
@@ -275,6 +273,14 @@ def main():
             elif(scelta in ("R", "REMOVE")):
                 mv_id = input("ID del movimento da RIMUOVERE: ")
                 pocket.remove_movement(mv_id)
+            elif(scelta in ("S", "STATS")):
+                if(number_page == -1):
+                    number_page = datetime.now().year
+                pocket.stats_movements(number_page)
+        else:
+            clear_screen()
+            print(error_message())
+
 
 if(__name__ == "__main__"):
     main()
