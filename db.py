@@ -34,8 +34,8 @@ def connect_db(db_path):
         CREATE TABLE IF NOT EXISTS movements (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
-            data_contabile TEXT,
-            data_valuta TEXT,
+            data_contabile TIMESTAMP,
+            data_valuta TIMESTAMP,
             causale_abi TEXT,
             descrizione TEXT,
             category TEXT NOT NULL,
@@ -133,9 +133,11 @@ def clean_movements_files(conn):
 
 def get_all_movements(conn):
     cursor = conn.execute("SELECT id, name, data_contabile, data_valuta, causale_abi, descrizione, category, amount, type FROM movements")
+    #cursor = conn.execute("SELECT * FROM movements")
     movements = cursor.fetchall()
     result = []
     for movement_data in movements:
+        print(f"DATA TYPE: {type(movement_data[3])}")
         movement = Movement(movement_data[1], movement_data[2], movement_data[3], movement_data[4], movement_data[5], movement_data[6], movement_data[7], movement_data[8])
         movement.set_id(movement_data[0])
         result.append(movement)

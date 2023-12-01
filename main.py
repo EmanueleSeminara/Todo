@@ -259,7 +259,7 @@ def main():
                 category = input("Categoria: ")
                 cifra = input("Cifra: ")
                 tipologia = input("Tipologia: ")
-                pocket.aggiungi_movement(nome, data, category, cifra, tipologia)
+                pocket.aggiungi_movement(nome, data, data, "", "", category, cifra, tipologia)
                 print("Movimento aggiunto con successo!")
                 input()
                 clear_screen()
