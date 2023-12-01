@@ -36,8 +36,23 @@ class Pocket:
                                 11: 'Novembre',
                                 12: 'Dicembre'
                             }
-        self.word_categoryy = {
-            'amazon.it': 'Acquisti online'
+        self.word_category = {
+            'Stipendio': ['join business management', 'progesi'],
+            'Paypal': ['paypal'],
+            'Prelievi': ['prelievo bancomat'],
+            'Spese Domestiche': ['amatilli', 'igino'],                                                              # Affitto/mutuo, bollette domestiche (luce, gas, acqua), spese condominiali.
+            'Cibo e Generi Alimentari': ['mcdonald', 'esercente farina', 'eurospin', 'famila', 'casalandia', 'zangaloro', 'pedevilla', 'ma supermercati'],       # Spese legate agli acquisti di generi alimentari e pasti fuori casa.
+            'Trasporti': ['anagnina', 'quintiliani', 'monti tiburtini', 'castro pretorio', 'cinecitta', 'tiburtina'],                                                                                        # Carburante, trasporto pubblico, manutenzione dell'auto.
+            'Assicurazioni': [],                                                                                    # Premi assicurativi per auto, casa, salute, ecc.
+            'Spese Mediche': [],                                                                                    # Ticket sanitari, farmaci, visite mediche.
+            'Divertimento e Tempo Libero': [],                                                                      # Spese per attività ricreative, cinema, ristoranti, hobby.
+            'Debiti e Prestiti': [],                                                                                # Rate di prestiti, pagamenti di carte di credito.
+            'Risparmi e Investimenti': ['satispay', 'acomea', 'aiello giuseppina'],                                 # Trasferimenti verso conti di risparmio o investimenti.
+            'Educazione': [],                                                                                       # Spese legate all\'istruzione, come tasse scolastiche, libri, corsi.
+            'Abbigliamento e Accessori': ['portadiroma', 'decathlon'],                                                           # Acquisti di vestiti, scarpe e altri accessori.
+            'Emergenze': [],                                                                                        # Fondi destinati a spese impreviste o emergenze.
+            'Vizi': ['tabacchi', 'tabaccheria', 'goglia mario'],                                                    # Contributi a organizzazioni non profit o cause benefiche.
+            'Acquisti Online': ['amazon.it', 'amzn mktp'],
         }
         # Nome del file JSON
         file_path = "config.json"
@@ -57,14 +72,15 @@ class Pocket:
         #print(f"{data_contabile} - {amount}")
         data_valuta = datetime.strptime(data_valuta, "%d/%m/%Y")
         data_contabile = datetime.strptime(data_contabile, "%d/%m/%Y")
-        if(descrizione == ""):
-            print("descrizione vuota")
-            for key, val in self.word_category.items():
-                print(f"{key} - {val} - {descrizione}")
-                if(key.upper() in descrizione.upper()):
-                    descrizione = val
+        if(category == ""):
+            for key, list in self.word_category.items():
+                for val in list:
+                    if(val.upper() in descrizione.upper()):
+                        category = key
+        if(category == ""):
+            category = "Altro"
         movement = Movement(nome, data_contabile, data_valuta, causale_abi, descrizione, category, amount, mv_type)
-        print(movement)
+        #print(movement)
         add_movement(self.conn, movement)
         self.movements = get_all_movements(self.conn)
 
@@ -234,9 +250,10 @@ class Pocket:
         categories_total = {}
         for movement in stats_movements:
             category = movement.category
-            if category not in categories_total:
-                categories_total[category] = Decimal(0.0)
-            categories_total[category] += Decimal(movement.amount[1:].replace('.', '').replace(',', '.'))
+            if movement.amount[0] == '-':
+                if category not in categories_total:
+                    categories_total[category] = Decimal(0.0)
+                categories_total[category] += Decimal(movement.amount[1:].replace('.', '').replace(',', '.'))
 
         # Ordina le categorie per il totale decrescente
         sorted_categories = sorted(categories_total.items(), key=lambda x: x[1], reverse=True)
@@ -244,28 +261,19 @@ class Pocket:
         # Estrai le categorie e i totali ordinati
         categories, totals = zip(*sorted_categories)
 
-        # Crea il grafico a torta
+        # Crea il grafico a torta senza nomi delle categorie
         plt.figure(figsize=(8, 8))
-        plt.pie(totals, labels=categories, autopct='%1.1f%%', startangle=140)
+        
+        # Utilizza una funzione personalizzata per l'etichetta autopct
+        def autopct_func(pct):
+            return f'{pct:.1f}%' if pct > 1 else ''
+
+        pie_chart = plt.pie(totals, autopct=autopct_func, startangle=140)
+
+        # Aggiungi una legenda personalizzata
+        legend_labels = [f"{category}: {total:.2f}€" for category, total in zip(categories, totals)]
+        plt.legend(pie_chart[0], legend_labels, loc="upper right", bbox_to_anchor=(1, 0, 0.5, 1))
+
         plt.title(f"Distribuzione delle spese per categorie - {year}")
 
         plt.show()
-    
-    
-
-    def conta_parole(self, lista_stringhe):
-        # Lista di stop words in italiano
-        stop_words = ["il", "lo", "la", "i", "gli", "le", "un", "una", "uno", "e", "o", "ma", "per", "con", "su", "tra", "fra", "33072506", "di", "esercente", "pagamento"]
-
-        # Rimuovi la punteggiatura e trasforma tutte le parole in minuscolo
-        parole_pulite = [parola.strip(string.punctuation).lower() for frase in lista_stringhe for parola in frase.split()]
-
-        # Rimuovi le stop words
-        parole_filtrate = [parola for parola in parole_pulite if parola not in stop_words]
-
-        # Conta le occorrenze delle parole
-        conteggio_parole = Counter(parole_filtrate)
-
-        return dict(conteggio_parole)
-
-
