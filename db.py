@@ -137,7 +137,7 @@ def get_all_movements(conn):
     movements = cursor.fetchall()
     result = []
     for movement_data in movements:
-        print(f"DATA TYPE: {type(movement_data[3])}")
+        #print(f"DATA TYPE: {type(movement_data[3])}")
         movement = Movement(movement_data[1], movement_data[2], movement_data[3], movement_data[4], movement_data[5], movement_data[6], movement_data[7], movement_data[8])
         movement.set_id(movement_data[0])
         result.append(movement)

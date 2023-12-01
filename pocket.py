@@ -9,6 +9,8 @@ from decimal import Decimal
 import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.ticker as ticker
+from collections import Counter
+import string
 
 
 
@@ -34,6 +36,9 @@ class Pocket:
                                 11: 'Novembre',
                                 12: 'Dicembre'
                             }
+        self.word_categoryy = {
+            'amazon.it': 'Acquisti online'
+        }
         # Nome del file JSON
         file_path = "config.json"
 
@@ -52,6 +57,12 @@ class Pocket:
         #print(f"{data_contabile} - {amount}")
         data_valuta = datetime.strptime(data_valuta, "%d/%m/%Y")
         data_contabile = datetime.strptime(data_contabile, "%d/%m/%Y")
+        if(descrizione == ""):
+            print("descrizione vuota")
+            for key, val in self.word_category.items():
+                print(f"{key} - {val} - {descrizione}")
+                if(key.upper() in descrizione.upper()):
+                    descrizione = val
         movement = Movement(nome, data_contabile, data_valuta, causale_abi, descrizione, category, amount, mv_type)
         print(movement)
         add_movement(self.conn, movement)
@@ -216,4 +227,45 @@ class Pocket:
         ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, pos: f'{x:.2f}€'))
 
         plt.legend()
+        plt.show(block=False)
+
+
+        # Calcola il totale per ogni categoria
+        categories_total = {}
+        for movement in stats_movements:
+            category = movement.category
+            if category not in categories_total:
+                categories_total[category] = Decimal(0.0)
+            categories_total[category] += Decimal(movement.amount[1:].replace('.', '').replace(',', '.'))
+
+        # Ordina le categorie per il totale decrescente
+        sorted_categories = sorted(categories_total.items(), key=lambda x: x[1], reverse=True)
+
+        # Estrai le categorie e i totali ordinati
+        categories, totals = zip(*sorted_categories)
+
+        # Crea il grafico a torta
+        plt.figure(figsize=(8, 8))
+        plt.pie(totals, labels=categories, autopct='%1.1f%%', startangle=140)
+        plt.title(f"Distribuzione delle spese per categorie - {year}")
+
         plt.show()
+    
+    
+
+    def conta_parole(self, lista_stringhe):
+        # Lista di stop words in italiano
+        stop_words = ["il", "lo", "la", "i", "gli", "le", "un", "una", "uno", "e", "o", "ma", "per", "con", "su", "tra", "fra", "33072506", "di", "esercente", "pagamento"]
+
+        # Rimuovi la punteggiatura e trasforma tutte le parole in minuscolo
+        parole_pulite = [parola.strip(string.punctuation).lower() for frase in lista_stringhe for parola in frase.split()]
+
+        # Rimuovi le stop words
+        parole_filtrate = [parola for parola in parole_pulite if parola not in stop_words]
+
+        # Conta le occorrenze delle parole
+        conteggio_parole = Counter(parole_filtrate)
+
+        return dict(conteggio_parole)
+
+

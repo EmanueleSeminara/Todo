@@ -277,6 +277,13 @@ def main():
                 if(number_page == -1):
                     number_page = datetime.now().year
                 pocket.stats_movements(number_page)
+                # asd = pocket.conta_parole([movement.descrizione for movement in pocket.movements])
+                # sorted_asd = dict(sorted(asd.items(), key=lambda x: x[1], reverse=True))
+                # # Stampare il dizionario in maniera ordinata
+                # for parola, conteggio in sorted_asd.items():
+                #     print(f"{parola}: {conteggio}")
+                    
+                
         else:
             clear_screen()
             print(error_message())
