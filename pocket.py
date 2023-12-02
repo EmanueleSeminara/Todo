@@ -54,6 +54,10 @@ class Pocket:
             'Vizi': ['tabacchi', 'tabaccheria', 'goglia mario'],                                                    # Contributi a organizzazioni non profit o cause benefiche.
             'Acquisti Online': ['amazon.it', 'amzn mktp'],
             'Bancomat pay': ['bancomat pay'],
+            'Rimborsi': ['affitto vincenzo', 'circuito maestro', 'spese roma'],
+            'Abbonamenti': ['wind', 'tim', 'iliad', ],
+            'Regali': ['da seminara irene ', 'pagopa', 'di trapa'],
+            'Bancomat pay': ['bancomat pay'],
         }
         # Nome del file JSON
         file_path = "config.json"
