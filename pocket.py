@@ -43,11 +43,11 @@ class Pocket:
             'Cibo e Generi Alimentari': [
                 'mcdonald', 'esercente farina', 'eurospin', 'famila', 'fiumicino aeroporto' , 'truth', 'bar', 'trattoria',
                 'zangaloro', 'pedevilla', 'ma supermercati', 'matrem', 'mini pizza', 'osteria del viandante', 'scimone',
-                'burger king', 'sushi'
+                'burger king', 'sushi', 'trapizzino', 'cotta a legna', 'gros', 'ristorante'
                 ],       # Spese legate agli acquisti di generi alimentari e pasti fuori casa.
             'Trasporti': ['anagnina', 'quintiliani', 'monti tiburtini', 'castro pretorio', 'cinecitta', 'tiburtina f.s.'],    #Da verificare se tiburtina lo trova altrove, inserire vicinanza in percentuale con altre frasi (la media delle percentuali)                                                                                    # Carburante, trasporto pubblico, manutenzione dell'auto.
             'Assicurazioni': [],                                                                                    # Premi assicurativi per auto, casa, salute, ecc.
-            'Spese Mediche': ['farmacia'],                                                                                    # Ticket sanitari, farmaci, visite mediche.
+            'Spese Mediche': ['nicitra''farmacia'],                                                                                    # Ticket sanitari, farmaci, visite mediche.
             'Divertimento e Tempo Libero': [],                                                                      # Spese per attività ricreative, cinema, ristoranti, hobby.
             'Debiti e Prestiti': [],                                                                                # Rate di prestiti, pagamenti di carte di credito.
             'Risparmi e Investimenti': ['satispay', 'acomea', 'aiello giuseppina', 'sottoscrizione titoli e/o fondi comuni'],                                 # Trasferimenti verso conti di risparmio o investimenti.
@@ -57,7 +57,7 @@ class Pocket:
             'Vizi': ['tabacchi', 'tabaccheria', 'goglia mario'],                                                    # Contributi a organizzazioni non profit o cause benefiche.
             'Acquisti Online': ['amazon.it', 'amzn mktp'],
             'Rimborsi': ['affitto vincenzo', 'circuito maestro', 'spese roma'],
-            'Abbonamenti': ['wind', 'tim', 'iliad', ],
+            'Abbonamenti': ['wind', 'tim', 'iliad', 'telecom'],
             'Regali': ['da seminara irene ', 'pagopa', 'di trapa'],
             'Bancomat pay': ['bancomat pay'],
             'Paypal': ['paypal'],
