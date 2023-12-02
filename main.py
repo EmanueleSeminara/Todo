@@ -26,23 +26,131 @@ def start():
     csv_directory = os.path.join(project_directory, 'csv')
     os.makedirs(csv_directory, exist_ok=True)
 
+    # Crea la cartella 'config' se non esiste già
+    config_directory = os.path.join(project_directory, 'config')
+    os.makedirs(config_directory, exist_ok=True)
+
     # Definisci i dati da inserire nel file config.json
     config_data = {
         "MOVEMENTS_RECORD_PAGE": "10",
         "TASKS_RECORD_PAGE": "10"
     }
 
+    word_category_data = {
+        "Stipendio": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "Spese Domestiche": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "Cibo e Generi Alimentari": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "Trasporti": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "Assicurazioni": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "Spese Mediche": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "Divertimento e Tempo Libero": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "Debiti e Prestiti": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "Risparmi e Investimenti": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "Educazione": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "Abbigliamento e Accessori": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "Emergenze": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "Vizi": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "Acquisti Online": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "Rimborsi": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "Abbonamenti": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "Regali": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "Bancomat pay": [
+            "bancomat pay"
+        ],
+        "Paypal": [
+            "paypal"
+        ]
+    }
+
     # Crea il percorso completo del file config.json
     config_file_path = os.path.join(project_directory, 'config.json')
+
+    # Crea il percorso completo del file config.json
+    word_category_file_path = os.path.join(project_directory, 'word_category.json')
 
     # Scrivi i dati nel file config.json se il file non esiste già
     if not os.path.exists(config_file_path):
         with open(config_file_path, 'w') as config_file:
             json.dump(config_data, config_file, indent=2)
         print("File config.json creato con successo nella directory del progetto.")
+    
+    # Scrivi i dati nel file config.json se il file non esiste già
+    if not os.path.exists(word_category_file_path):
+        with open(word_category_file_path, 'w') as word_category_file:
+            json.dump(word_category_data, word_category_file, indent=4)
+        print("File config.json creato con successo nella directory del progetto.")
 
     print(f"Cartella 'temp' creata con successo nella directory del progetto: {temp_directory}")
     print(f"Cartella 'csv' creata con successo nella directory del progetto: {csv_directory}")
+    print(f"Cartella 'config' creata con successo nella directory del progetto: {config_directory}")
 
 def create_default_category(db_path):
     conn = connect_db(db_path)

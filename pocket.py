@@ -11,6 +11,7 @@ import numpy as np
 import matplotlib.ticker as ticker
 from collections import Counter
 import string
+import json
 
 
 
@@ -36,32 +37,15 @@ class Pocket:
                                 11: 'Novembre',
                                 12: 'Dicembre'
                             }
-        self.word_category = {
-            'Stipendio': ['join business management', 'progesi'],
-            'Prelievi': ['prelievo bancomat'],
-            'Spese Domestiche': ['amatilli', 'igino', 'vodafone', 'sky', 'sorgenia', 'parente ilaria', 'casalandia'],                                                              # Affitto/mutuo, bollette domestiche (luce, gas, acqua), spese condominiali.
-            'Cibo e Generi Alimentari': [
-                'mcdonald', 'esercente farina', 'eurospin', 'famila', 'fiumicino aeroporto' , 'truth', 'bar', 'trattoria',
-                'zangaloro', 'pedevilla', 'ma supermercati', 'matrem', 'mini pizza', 'osteria del viandante', 'scimone',
-                'burger king', 'sushi', 'trapizzino', 'cotta a legna', 'gros', 'ristorante'
-                ],       # Spese legate agli acquisti di generi alimentari e pasti fuori casa.
-            'Trasporti': ['anagnina', 'quintiliani', 'monti tiburtini', 'castro pretorio', 'cinecitta', 'tiburtina f.s.'],    #Da verificare se tiburtina lo trova altrove, inserire vicinanza in percentuale con altre frasi (la media delle percentuali)                                                                                    # Carburante, trasporto pubblico, manutenzione dell'auto.
-            'Assicurazioni': [],                                                                                    # Premi assicurativi per auto, casa, salute, ecc.
-            'Spese Mediche': ['farmacia', 'nicitra'],                                                                                    # Ticket sanitari, farmaci, visite mediche.
-            'Divertimento e Tempo Libero': [],                                                                      # Spese per attività ricreative, cinema, ristoranti, hobby.
-            'Debiti e Prestiti': [],                                                                                # Rate di prestiti, pagamenti di carte di credito.
-            'Risparmi e Investimenti': ['satispay', 'acomea', 'aiello giuseppina', 'sottoscrizione titoli e/o fondi comuni'],                                 # Trasferimenti verso conti di risparmio o investimenti.
-            'Educazione': [],                                                                                       # Spese legate all\'istruzione, come tasse scolastiche, libri, corsi.
-            'Abbigliamento e Accessori': ['portadiroma', 'decathlon', 'clayton', 'zara', 'yashin'],                                                           # Acquisti di vestiti, scarpe e altri accessori.
-            'Emergenze': [],                                                                                        # Fondi destinati a spese impreviste o emergenze.
-            'Vizi': ['tabacchi', 'tabaccheria', 'goglia mario'],                                                    # Contributi a organizzazioni non profit o cause benefiche.
-            'Acquisti Online': ['amazon.it', 'amzn mktp'],
-            'Rimborsi': ['affitto vincenzo', 'circuito maestro', 'spese roma'],
-            'Abbonamenti': ['wind', 'tim', 'iliad', 'telecom'],
-            'Regali': ['da seminara irene ', 'pagopa', 'di trapa'],
-            'Bancomat pay': ['bancomat pay'],
-            'Paypal': ['paypal'],
-        }
+
+
+        # Recuperare il JSON da un file e inserirlo nella variabile
+        with open('word_category.json', 'r') as json_file:
+            loaded_data = json.load(json_file)
+
+        # Inserire il JSON nella variabile
+        self.word_category = loaded_data
+
         # Nome del file JSON
         file_path = "config.json"
 
@@ -80,12 +64,18 @@ class Pocket:
         #print(f"{data_contabile} - {amount}")
         data_valuta = datetime.strptime(data_valuta, "%d/%m/%Y")
         data_contabile = datetime.strptime(data_contabile, "%d/%m/%Y")
+        flag_priority = False
         if(category == ""):
             for key, list in self.word_category.items():
                 for val in list:
+                    if(val.upper() == "di trapa"):
+                        print(f"{val.upper() in descrizione.upper()} - {val.upper()} - {descrizione.upper()}")
                     if(val.upper() in descrizione.upper()):
                         category = key
+                        flag_priority = True
                         break
+                if(flag_priority):
+                    break
         if(category == ""):
             category = "Altro"
         movement = Movement(nome, data_contabile, data_valuta, causale_abi, descrizione, category, amount, mv_type)

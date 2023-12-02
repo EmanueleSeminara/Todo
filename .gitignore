@@ -4,4 +4,5 @@ venv
 csv/*
 temp/*
 .env
-config.json
+*.json
+*.BKT
