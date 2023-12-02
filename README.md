@@ -62,8 +62,36 @@ Per eseguire l'applicazione, segui questi passaggi:
     python main.py
     ```
 
-## Note
+## Utilizzo dell'Applicazione
 
-Assicurati di avere Python installato sul tuo sistema prima di seguire questi passaggi. Inoltre, è consigliato utilizzare un ambiente virtuale per isolare le dipendenze del progetto.
+L'applicazione offre diverse funzionalità, tra cui l'aggiunta, la visualizzazione, la modifica e la rimozione di attività ("to-do") e movimenti finanziari. Puoi interagire con l'applicazione tramite comandi da console.
 
-Happy task managing!
+Esempi di comandi:
+
+- Aggiungi un nuovo task:
+
+  ```bash
+  python main.py TASK ADD
+  ```
+- Visualizza la lista di task:
+
+    ```bash
+    TASK LIST
+    ```
+- Aggiungi un nuovo movimento finanziario:
+
+    ```bash
+    MOVEMENT ADD
+    ```
+- Visualizza la lista dei movimenti finanziari:
+
+    ```bash
+    MOVEMENT LIST
+    ```
+- Per ulteriori dettagli sui comandi disponibili, esegui:
+
+    ```bash
+    HELP
+    ```
+
+Buona gestione delle attività e dei movimenti finanziari!
