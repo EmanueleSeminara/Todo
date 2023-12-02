@@ -2,9 +2,33 @@
 
 Questo repository contiene un'applicazione di gestione delle attività "to-do" e dei movimenti finanziari. L'applicazione è progettata per aiutarti a tenere traccia dei tuoi compiti e delle tue transazioni finanziarie.
 
+## Screenshot
+
+| ![Screen Grafico Entrate Uscite](/screenshots/Entrate_uscite_Novembre_2023.png) | ![Screen Grafico Suddivisione Categorie](/screenshots/Suddivisione_categorie_Novembre_2023.png) |
+|---|---|
+| Grafico Entrate Uscite | Grafico Suddivisione Categorie |
+
 ## Struttura del Progetto
 
 La struttura del progetto è organizzata nei seguenti file e cartelle:
+
+```
+TODO
+├── README.md
+├── category.py
+├── db.py
+├── main.py
+├── movement.py
+├── pocket.py
+├── registro_idee.py
+├── requirements.txt
+├── rubrica.py
+├── task.py
+├── temp
+├── todo.db
+├── todolist.py
+└── utils.py
+```
 
 - **category.py**: Contiene la definizione della classe `Category` per gestire le categorie delle attività.
 - **config.json**: File di configurazione contenente le impostazioni dell'applicazione.
@@ -18,6 +42,8 @@ La struttura del progetto è organizzata nei seguenti file e cartelle:
 - **todo.db**: File del database SQLite che memorizza i dati dell'applicazione.
 - **todolist.py**: Modulo per la gestione delle liste di attività.
 - **utils.py**: Contiene funzioni di utilità per il progetto.
+
+
 
 ## Requisiti e Installazione
 
@@ -71,7 +97,7 @@ Esempi di comandi:
 - Aggiungi un nuovo task:
 
   ```bash
-  python main.py TASK ADD
+  TASK ADD
   ```
 - Visualizza la lista di task:
 
