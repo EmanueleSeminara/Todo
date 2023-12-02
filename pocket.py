@@ -40,8 +40,8 @@ class Pocket:
             'Stipendio': ['join business management', 'progesi'],
             'Paypal': ['paypal'],
             'Prelievi': ['prelievo bancomat'],
-            'Spese Domestiche': ['amatilli', 'igino', 'vodafone'],                                                              # Affitto/mutuo, bollette domestiche (luce, gas, acqua), spese condominiali.
-            'Cibo e Generi Alimentari': ['mcdonald', 'esercente farina', 'eurospin', 'famila', 'casalandia', 'zangaloro', 'pedevilla', 'ma supermercati', 'matrem', 'mini pizza', 'scimone', 'burger king'],       # Spese legate agli acquisti di generi alimentari e pasti fuori casa.
+            'Spese Domestiche': ['amatilli', 'igino', 'vodafone', 'sky', 'sorgenia'],                                                              # Affitto/mutuo, bollette domestiche (luce, gas, acqua), spese condominiali.
+            'Cibo e Generi Alimentari': ['mcdonald', 'esercente farina', 'eurospin', 'famila', 'casalandia', 'zangaloro', 'pedevilla', 'ma supermercati', 'matrem', 'mini pizza', 'scimone', 'burger king', 'sushi'],       # Spese legate agli acquisti di generi alimentari e pasti fuori casa.
             'Trasporti': ['anagnina', 'quintiliani', 'monti tiburtini', 'castro pretorio', 'cinecitta', 'tiburtina'],    #Da verificare se tiburtina lo trova altrove, inserire vicinanza in percentuale con altre frasi (la media delle percentuali)                                                                                    # Carburante, trasporto pubblico, manutenzione dell'auto.
             'Assicurazioni': [],                                                                                    # Premi assicurativi per auto, casa, salute, ecc.
             'Spese Mediche': [],                                                                                    # Ticket sanitari, farmaci, visite mediche.
