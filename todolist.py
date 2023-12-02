@@ -43,7 +43,8 @@ class TodoList:
         print("TASKS_RECORD_PAGE:", TASKS_RECORD_PAGE)
 
     def aggiungi_task(self, nome, data, category_id):
-        data = datetime.strptime(data, "%d/%m/%Y")
+        if(type(data) is str):
+            data = datetime.strptime(data, "%d/%m/%Y")
         print(data)
         
         task = Task(nome, data, category_id)

@@ -38,26 +38,25 @@ class Pocket:
                             }
         self.word_category = {
             'Stipendio': ['join business management', 'progesi'],
-            'Paypal': ['paypal'],
             'Prelievi': ['prelievo bancomat'],
-            'Spese Domestiche': ['amatilli', 'igino', 'vodafone', 'sky', 'sorgenia'],                                                              # Affitto/mutuo, bollette domestiche (luce, gas, acqua), spese condominiali.
-            'Cibo e Generi Alimentari': ['mcdonald', 'esercente farina', 'eurospin', 'famila', 'casalandia', 'zangaloro', 'pedevilla', 'ma supermercati', 'matrem', 'mini pizza', 'scimone', 'burger king', 'sushi'],       # Spese legate agli acquisti di generi alimentari e pasti fuori casa.
+            'Spese Domestiche': ['amatilli', 'igino', 'vodafone', 'sky', 'sorgenia', 'parente ilaria'],                                                              # Affitto/mutuo, bollette domestiche (luce, gas, acqua), spese condominiali.
+            'Cibo e Generi Alimentari': ['mcdonald', 'esercente farina', 'eurospin', 'famila', 'fiumicino aeroporto' , 'truth', 'bar', 'trattoria', 'casalandia', 'zangaloro', 'pedevilla', 'ma supermercati', 'matrem', 'mini pizza', 'osteria del viandante', 'scimone', 'burger king', 'sushi'],       # Spese legate agli acquisti di generi alimentari e pasti fuori casa.
             'Trasporti': ['anagnina', 'quintiliani', 'monti tiburtini', 'castro pretorio', 'cinecitta', 'tiburtina'],    #Da verificare se tiburtina lo trova altrove, inserire vicinanza in percentuale con altre frasi (la media delle percentuali)                                                                                    # Carburante, trasporto pubblico, manutenzione dell'auto.
             'Assicurazioni': [],                                                                                    # Premi assicurativi per auto, casa, salute, ecc.
-            'Spese Mediche': [],                                                                                    # Ticket sanitari, farmaci, visite mediche.
+            'Spese Mediche': ['farmacia'],                                                                                    # Ticket sanitari, farmaci, visite mediche.
             'Divertimento e Tempo Libero': [],                                                                      # Spese per attività ricreative, cinema, ristoranti, hobby.
             'Debiti e Prestiti': [],                                                                                # Rate di prestiti, pagamenti di carte di credito.
             'Risparmi e Investimenti': ['satispay', 'acomea', 'aiello giuseppina', 'sottoscrizione titoli e/o fondi comuni'],                                 # Trasferimenti verso conti di risparmio o investimenti.
             'Educazione': [],                                                                                       # Spese legate all\'istruzione, come tasse scolastiche, libri, corsi.
-            'Abbigliamento e Accessori': ['portadiroma', 'decathlon'],                                                           # Acquisti di vestiti, scarpe e altri accessori.
+            'Abbigliamento e Accessori': ['portadiroma', 'decathlon', 'clayton', 'zara'],                                                           # Acquisti di vestiti, scarpe e altri accessori.
             'Emergenze': [],                                                                                        # Fondi destinati a spese impreviste o emergenze.
             'Vizi': ['tabacchi', 'tabaccheria', 'goglia mario'],                                                    # Contributi a organizzazioni non profit o cause benefiche.
             'Acquisti Online': ['amazon.it', 'amzn mktp'],
-            'Bancomat pay': ['bancomat pay'],
             'Rimborsi': ['affitto vincenzo', 'circuito maestro', 'spese roma'],
             'Abbonamenti': ['wind', 'tim', 'iliad', ],
             'Regali': ['da seminara irene ', 'pagopa', 'di trapa'],
             'Bancomat pay': ['bancomat pay'],
+            'Paypal': ['paypal'],
         }
         # Nome del file JSON
         file_path = "config.json"
@@ -180,6 +179,7 @@ class Pocket:
         month_stats = {}
         entrate_totali = Decimal(0.0)
         uscite_totali = Decimal(0.0)
+        sorted_movements = sorted(self.movements, key=lambda x: x.data_valuta)
 
         for movement in self.movements:
             
@@ -222,10 +222,13 @@ class Pocket:
         r2 = [x + bar_width + 0.1 for x in r1]  # Aggiungi un offset di 0.1 per distanziare le barre
 
         fig, ax = plt.subplots()
-        ax.bar(r1, entrate, width=bar_width, label='Entrate')
-        ax.bar(r2, uscite, width=bar_width, label='Uscite')
+        # [stats['entrate'] for stats in month_stats.values()]
+        amount_sum_entrate = sum(stats['entrate'] for stats in month_stats.values())
+        amount_sum_uscite = sum(stats['uscite'] for stats in month_stats.values())
+        ax.bar(r1, entrate, width=bar_width, label=f'Entrate: {amount_sum_entrate:.2f}€')
+        ax.bar(r2, uscite, width=bar_width, label=f'Uscite: {amount_sum_uscite:.2f}')
 
-        plt.title(f"Entrate e Uscite {year}")
+        plt.title(f"Entrate e Uscite {year}\nAggiornato a {self.months_dict[int(sorted_movements[-1].data_valuta.strftime('%m'))]}")
         plt.xticks([r + bar_width / 2 for r in range(len(months))], months)  # Posiziona le etichette dei mesi al centro
         plt.legend()
 
@@ -246,6 +249,7 @@ class Pocket:
 
         # Formatta automaticamente i valori dell'asse y con il simbolo dell'euro
         ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, pos: f'{x:.2f}€'))
+        legend = ['Pippo']
 
         plt.legend()
         plt.show(block=False)
@@ -276,9 +280,15 @@ class Pocket:
         pie_chart = plt.pie(totals, autopct=autopct_func, startangle=140)
 
         # Aggiungi una legenda personalizzata
-        legend_labels = [f"{category}: {total:.2f}€" for category, total in zip(categories, totals)]
+        legend_labels = []
+        i = 1
+
+        for category, total in zip(categories, totals):
+            legend_labels.append(f"{i}. {category}: {total:.2f}€")
+            i += 1
+
         plt.legend(pie_chart[0], legend_labels, loc="upper right", bbox_to_anchor=(1, 0, 0.5, 1))
 
-        plt.title(f"Distribuzione delle spese per categorie - {year}")
+        plt.title(f"Distribuzione delle uscite per categorie - {year}\nAggiornato a {self.months_dict[int(sorted_movements[-1].data_valuta.strftime('%m'))]}")
 
         plt.show()

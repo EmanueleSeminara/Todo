@@ -165,7 +165,12 @@ def main():
                 clear_screen()
                 print("----- Aggiunta nuovo task ------")
                 nome = input("Nome: ")
-                data = input("Data:: ")
+                data = input("Data: ")
+                data = datetime.strptime(data, "%d/%m/%Y")
+                if(data < datetime.now()):
+                    input_past_date = input("Data nel passato, confermare: ").upper()
+                    if(input_past_date in ("N", "NO")):
+                        continue
                 print(*todo_list.categories)
                 category_input = input("Categoria: ")
                 found_category = next((category for category in todo_list.categories if category_input.upper() == category.name.upper()), None)
