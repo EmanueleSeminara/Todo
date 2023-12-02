@@ -40,19 +40,20 @@ class Pocket:
             'Stipendio': ['join business management', 'progesi'],
             'Paypal': ['paypal'],
             'Prelievi': ['prelievo bancomat'],
-            'Spese Domestiche': ['amatilli', 'igino'],                                                              # Affitto/mutuo, bollette domestiche (luce, gas, acqua), spese condominiali.
-            'Cibo e Generi Alimentari': ['mcdonald', 'esercente farina', 'eurospin', 'famila', 'casalandia', 'zangaloro', 'pedevilla', 'ma supermercati'],       # Spese legate agli acquisti di generi alimentari e pasti fuori casa.
-            'Trasporti': ['anagnina', 'quintiliani', 'monti tiburtini', 'castro pretorio', 'cinecitta', 'tiburtina'],                                                                                        # Carburante, trasporto pubblico, manutenzione dell'auto.
+            'Spese Domestiche': ['amatilli', 'igino', 'vodafone'],                                                              # Affitto/mutuo, bollette domestiche (luce, gas, acqua), spese condominiali.
+            'Cibo e Generi Alimentari': ['mcdonald', 'esercente farina', 'eurospin', 'famila', 'casalandia', 'zangaloro', 'pedevilla', 'ma supermercati', 'matrem', 'mini pizza', 'scimone', 'burger king'],       # Spese legate agli acquisti di generi alimentari e pasti fuori casa.
+            'Trasporti': ['anagnina', 'quintiliani', 'monti tiburtini', 'castro pretorio', 'cinecitta', 'tiburtina'],    #Da verificare se tiburtina lo trova altrove, inserire vicinanza in percentuale con altre frasi (la media delle percentuali)                                                                                    # Carburante, trasporto pubblico, manutenzione dell'auto.
             'Assicurazioni': [],                                                                                    # Premi assicurativi per auto, casa, salute, ecc.
             'Spese Mediche': [],                                                                                    # Ticket sanitari, farmaci, visite mediche.
             'Divertimento e Tempo Libero': [],                                                                      # Spese per attività ricreative, cinema, ristoranti, hobby.
             'Debiti e Prestiti': [],                                                                                # Rate di prestiti, pagamenti di carte di credito.
-            'Risparmi e Investimenti': ['satispay', 'acomea', 'aiello giuseppina'],                                 # Trasferimenti verso conti di risparmio o investimenti.
+            'Risparmi e Investimenti': ['satispay', 'acomea', 'aiello giuseppina', 'sottoscrizione titoli e/o fondi comuni'],                                 # Trasferimenti verso conti di risparmio o investimenti.
             'Educazione': [],                                                                                       # Spese legate all\'istruzione, come tasse scolastiche, libri, corsi.
             'Abbigliamento e Accessori': ['portadiroma', 'decathlon'],                                                           # Acquisti di vestiti, scarpe e altri accessori.
             'Emergenze': [],                                                                                        # Fondi destinati a spese impreviste o emergenze.
             'Vizi': ['tabacchi', 'tabaccheria', 'goglia mario'],                                                    # Contributi a organizzazioni non profit o cause benefiche.
             'Acquisti Online': ['amazon.it', 'amzn mktp'],
+            'Bancomat pay': ['bancomat pay'],
         }
         # Nome del file JSON
         file_path = "config.json"
