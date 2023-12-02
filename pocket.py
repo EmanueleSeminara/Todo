@@ -39,16 +39,20 @@ class Pocket:
         self.word_category = {
             'Stipendio': ['join business management', 'progesi'],
             'Prelievi': ['prelievo bancomat'],
-            'Spese Domestiche': ['amatilli', 'igino', 'vodafone', 'sky', 'sorgenia', 'parente ilaria'],                                                              # Affitto/mutuo, bollette domestiche (luce, gas, acqua), spese condominiali.
-            'Cibo e Generi Alimentari': ['mcdonald', 'esercente farina', 'eurospin', 'famila', 'fiumicino aeroporto' , 'truth', 'bar', 'trattoria', 'casalandia', 'zangaloro', 'pedevilla', 'ma supermercati', 'matrem', 'mini pizza', 'osteria del viandante', 'scimone', 'burger king', 'sushi'],       # Spese legate agli acquisti di generi alimentari e pasti fuori casa.
-            'Trasporti': ['anagnina', 'quintiliani', 'monti tiburtini', 'castro pretorio', 'cinecitta', 'tiburtina'],    #Da verificare se tiburtina lo trova altrove, inserire vicinanza in percentuale con altre frasi (la media delle percentuali)                                                                                    # Carburante, trasporto pubblico, manutenzione dell'auto.
+            'Spese Domestiche': ['amatilli', 'igino', 'vodafone', 'sky', 'sorgenia', 'parente ilaria', 'casalandia'],                                                              # Affitto/mutuo, bollette domestiche (luce, gas, acqua), spese condominiali.
+            'Cibo e Generi Alimentari': [
+                'mcdonald', 'esercente farina', 'eurospin', 'famila', 'fiumicino aeroporto' , 'truth', 'bar', 'trattoria',
+                'zangaloro', 'pedevilla', 'ma supermercati', 'matrem', 'mini pizza', 'osteria del viandante', 'scimone',
+                'burger king', 'sushi'
+                ],       # Spese legate agli acquisti di generi alimentari e pasti fuori casa.
+            'Trasporti': ['anagnina', 'quintiliani', 'monti tiburtini', 'castro pretorio', 'cinecitta', 'tiburtina f.s.'],    #Da verificare se tiburtina lo trova altrove, inserire vicinanza in percentuale con altre frasi (la media delle percentuali)                                                                                    # Carburante, trasporto pubblico, manutenzione dell'auto.
             'Assicurazioni': [],                                                                                    # Premi assicurativi per auto, casa, salute, ecc.
             'Spese Mediche': ['farmacia'],                                                                                    # Ticket sanitari, farmaci, visite mediche.
             'Divertimento e Tempo Libero': [],                                                                      # Spese per attività ricreative, cinema, ristoranti, hobby.
             'Debiti e Prestiti': [],                                                                                # Rate di prestiti, pagamenti di carte di credito.
             'Risparmi e Investimenti': ['satispay', 'acomea', 'aiello giuseppina', 'sottoscrizione titoli e/o fondi comuni'],                                 # Trasferimenti verso conti di risparmio o investimenti.
             'Educazione': [],                                                                                       # Spese legate all\'istruzione, come tasse scolastiche, libri, corsi.
-            'Abbigliamento e Accessori': ['portadiroma', 'decathlon', 'clayton', 'zara'],                                                           # Acquisti di vestiti, scarpe e altri accessori.
+            'Abbigliamento e Accessori': ['portadiroma', 'decathlon', 'clayton', 'zara', 'yashin'],                                                           # Acquisti di vestiti, scarpe e altri accessori.
             'Emergenze': [],                                                                                        # Fondi destinati a spese impreviste o emergenze.
             'Vizi': ['tabacchi', 'tabaccheria', 'goglia mario'],                                                    # Contributi a organizzazioni non profit o cause benefiche.
             'Acquisti Online': ['amazon.it', 'amzn mktp'],
@@ -81,6 +85,7 @@ class Pocket:
                 for val in list:
                     if(val.upper() in descrizione.upper()):
                         category = key
+                        break
         if(category == ""):
             category = "Altro"
         movement = Movement(nome, data_contabile, data_valuta, causale_abi, descrizione, category, amount, mv_type)
@@ -144,7 +149,6 @@ class Pocket:
                 movement_data_contabile = ""
 
             print("| {:^3} | {:^30} | {:^17} | {:^17} | {:^15} | {:^12} | {:^15} |".format(movement.id, movement.name[:30], movement_data_contabile, movement_data_valuta, movement.category, movement.amount, movement.type))
-            #print("| {:^3} | {:^30} | {:^17} | {:^17} | {:^15} | {:^12} | {:^15} |".format(movement.id, movement.data_contabile, movement.data_contabile, "asd", "asd", "asd", "asd"))
         print("{:<131}".format("-" * 131))
         print("| {:<42}{:^43}{:>42} |".format(f"TOT: {len(self.movements)}", "Pagina " + str(page + 1) + " di " + str(ceil(len(self.movements)/num_for_page)), "SOMMA MOVIMENTI: {:.2f}".format(amount_sum)))
         print("{:<131}".format("-" * 131))
@@ -175,6 +179,9 @@ class Pocket:
         self.movements = []
     
     def stats_movements(self, year):
+        if not self.movements:
+            print(f"La lista dei movimenti e' vuota {self.movements}.")
+            return
         stats_movements = []
         month_stats = {}
         entrate_totali = Decimal(0.0)
@@ -202,15 +209,9 @@ class Pocket:
             for key, value in values.items():
                 month_stats[month][key] = float(value)
 
-        
-        
-        #print(len(self.movements))
-        #print(len(stats_movements))
         print(f"USCITE: {uscite_totali} - ENTRATE: {entrate_totali} - TOT: {entrate_totali - uscite_totali}\n\n")
         month_stats = dict(sorted(month_stats.items()))
         print(month_stats)
-        # for month, stats in month_stats.items():
-        #     print(f"{month}: USCITE: {stats['uscite']} - ENTRATE: {stats['entrate']} - TOT: {stats['entrate'] - stats['uscite']}")
 
         # Creazione dell'istogramma
         months = [self.months_dict[val] for val in month_stats.keys()]
@@ -252,6 +253,7 @@ class Pocket:
         legend = ['Pippo']
 
         plt.legend()
+        plt.get_current_fig_manager().set_window_title(f"Entrate uscite {self.months_dict[int(sorted_movements[-1].data_valuta.strftime('%m'))]} {year}")
         plt.show(block=False)
 
 
@@ -290,5 +292,5 @@ class Pocket:
         plt.legend(pie_chart[0], legend_labels, loc="upper right", bbox_to_anchor=(1, 0, 0.5, 1))
 
         plt.title(f"Distribuzione delle uscite per categorie - {year}\nAggiornato a {self.months_dict[int(sorted_movements[-1].data_valuta.strftime('%m'))]}")
-
+        plt.get_current_fig_manager().set_window_title(f"Suddivisione categorie {self.months_dict[int(sorted_movements[-1].data_valuta.strftime('%m'))]} {year}")
         plt.show()

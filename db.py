@@ -75,6 +75,14 @@ def connect_db(db_path):
         )
     ''')
 
+    conn.execute('''
+        CREATE TABLE IF NOT EXISTS account (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT,
+            type TEXT
+        )
+    ''')
+
     return conn
 
 def add_task(conn, task):
