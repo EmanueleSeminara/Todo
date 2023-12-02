@@ -131,10 +131,10 @@ def start():
     }
 
     # Crea il percorso completo del file config.json
-    config_file_path = os.path.join(project_directory, 'config.json')
+    config_file_path = os.path.join(project_directory, 'config/config.json')
 
     # Crea il percorso completo del file config.json
-    word_category_file_path = os.path.join(project_directory, 'word_category.json')
+    word_category_file_path = os.path.join(project_directory, 'config/word_category.json')
 
     # Scrivi i dati nel file config.json se il file non esiste già
     if not os.path.exists(config_file_path):

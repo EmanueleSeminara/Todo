@@ -40,14 +40,14 @@ class Pocket:
 
 
         # Recuperare il JSON da un file e inserirlo nella variabile
-        with open('word_category.json', 'r') as json_file:
+        with open('config/word_category.json', 'r') as json_file:
             loaded_data = json.load(json_file)
 
         # Inserire il JSON nella variabile
         self.word_category = loaded_data
 
         # Nome del file JSON
-        file_path = "config.json"
+        file_path = "config/config.json"
 
         # Leggi il file JSON
         with open(file_path, "r") as json_file:
@@ -82,7 +82,6 @@ class Pocket:
         #print(movement)
         add_movement(self.conn, movement)
         self.movements = get_all_movements(self.conn)
-
     def mostra_movement(self):
         #movements = get_all_movements(self.conn)
         if not self.movements:
@@ -145,7 +144,7 @@ class Pocket:
 
     def setRecordPage(self, movements_record_number):
         # Nome del file JSON
-        file_path = "config.json"
+        file_path = "config/config.json"
 
         # Leggi il file JSON
         with open(file_path, "r") as json_file:

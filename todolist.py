@@ -29,7 +29,7 @@ class TodoList:
                             }
         #print(self.tasks)
         # Nome del file JSON
-        file_path = "config.json"
+        file_path = "config/config.json"
 
         # Leggi il file JSON
         with open(file_path, "r") as json_file:
@@ -112,7 +112,7 @@ class TodoList:
 
     def setRecordPage(self, tasks_record_number):
         # Nome del file JSON
-        file_path = "config.json"
+        file_path = "config/config.json"
 
         # Leggi il file JSON
         with open(file_path, "r") as json_file:
