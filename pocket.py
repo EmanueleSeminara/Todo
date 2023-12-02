@@ -47,7 +47,7 @@ class Pocket:
                 ],       # Spese legate agli acquisti di generi alimentari e pasti fuori casa.
             'Trasporti': ['anagnina', 'quintiliani', 'monti tiburtini', 'castro pretorio', 'cinecitta', 'tiburtina f.s.'],    #Da verificare se tiburtina lo trova altrove, inserire vicinanza in percentuale con altre frasi (la media delle percentuali)                                                                                    # Carburante, trasporto pubblico, manutenzione dell'auto.
             'Assicurazioni': [],                                                                                    # Premi assicurativi per auto, casa, salute, ecc.
-            'Spese Mediche': ['nicitra''farmacia'],                                                                                    # Ticket sanitari, farmaci, visite mediche.
+            'Spese Mediche': ['farmacia', 'nicitra'],                                                                                    # Ticket sanitari, farmaci, visite mediche.
             'Divertimento e Tempo Libero': [],                                                                      # Spese per attività ricreative, cinema, ristoranti, hobby.
             'Debiti e Prestiti': [],                                                                                # Rate di prestiti, pagamenti di carte di credito.
             'Risparmi e Investimenti': ['satispay', 'acomea', 'aiello giuseppina', 'sottoscrizione titoli e/o fondi comuni'],                                 # Trasferimenti verso conti di risparmio o investimenti.
@@ -258,39 +258,70 @@ class Pocket:
 
 
         # Calcola il totale per ogni categoria
-        categories_total = {}
+        categories_expenses = {}
+        categories_entries = {}
         for movement in stats_movements:
             category = movement.category
             if movement.amount[0] == '-':
-                if category not in categories_total:
-                    categories_total[category] = Decimal(0.0)
-                categories_total[category] += Decimal(movement.amount[1:].replace('.', '').replace(',', '.'))
+                if category not in categories_expenses:
+                    categories_expenses[category] = Decimal(0.0)
+                categories_expenses[category] += Decimal(movement.amount[1:].replace('.', '').replace(',', '.'))
+            
+            elif movement.amount[0] == '+':
+                if category not in categories_entries:
+                    categories_entries[category] = Decimal(0.0)
+                categories_entries[category] += Decimal(movement.amount[1:].replace('.', '').replace(',', '.'))
 
         # Ordina le categorie per il totale decrescente
-        sorted_categories = sorted(categories_total.items(), key=lambda x: x[1], reverse=True)
+        sorted_categories_expenses = sorted(categories_expenses.items(), key=lambda x: x[1], reverse=True)
+        sorted_categories_entries = sorted(categories_entries.items(), key=lambda x: x[1], reverse=True)
 
-        # Estrai le categorie e i totali ordinati
-        categories, totals = zip(*sorted_categories)
+        # Estrai le categorie e i totali ordinati per le uscite
+        categories_expenses, totals_expenses = zip(*sorted_categories_expenses)
 
-        # Crea il grafico a torta senza nomi delle categorie
+        # Crea il grafico a torta per le uscite senza nomi delle categorie
         plt.figure(figsize=(8, 8))
-        
-        # Utilizza una funzione personalizzata per l'etichetta autopct
-        def autopct_func(pct):
-            return f'{pct:.1f}%' if pct > 1 else ''
+        plt.subplot(121)  # Creazione del subplot a sinistra
 
-        pie_chart = plt.pie(totals, autopct=autopct_func, startangle=140)
+        def autopct_func_expenses(pct):
+            return f'{pct:.1f}%' if pct > 2 else ''
 
-        # Aggiungi una legenda personalizzata
-        legend_labels = []
+        pie_chart_expenses = plt.pie(totals_expenses, autopct=autopct_func_expenses, startangle=140)
+
+        # Aggiungi una legenda personalizzata per le uscite
+        legend_labels_expenses = []
         i = 1
 
-        for category, total in zip(categories, totals):
-            legend_labels.append(f"{i}. {category}: {total:.2f}€")
+        for category, total in zip(categories_expenses, totals_expenses):
+            legend_labels_expenses.append(f"{i}. {category}: {total:.2f}€")
             i += 1
 
-        plt.legend(pie_chart[0], legend_labels, loc="upper right", bbox_to_anchor=(1, 0, 0.5, 1))
+        plt.legend(pie_chart_expenses[0], legend_labels_expenses, loc="upper right", bbox_to_anchor=(1.05, 0, 0.5, 1), fontsize='small')
 
         plt.title(f"Distribuzione delle uscite per categorie - {year}\nAggiornato a {self.months_dict[int(sorted_movements[-1].data_valuta.strftime('%m'))]}")
+
+        # Estrai le categorie e i totali ordinati per le entrate
+        categories_entries, totals_entries = zip(*sorted_categories_entries)
+
+        # Crea il grafico a torta per le entrate senza nomi delle categorie
+        plt.subplot(122)  # Creazione del subplot a destra
+
+        def autopct_func_entries(pct):
+            return f'{pct:.1f}%' if pct > 2 else ''
+
+        pie_chart_entries = plt.pie(totals_entries, autopct=autopct_func_entries, startangle=140)
+
+        # Aggiungi una legenda personalizzata per le entrate
+        legend_labels_entries = []
+        i = 1
+
+        for category, total in zip(categories_entries, totals_entries):
+            legend_labels_entries.append(f"{i}. {category}: {total:.2f}€")
+            i += 1
+
+        plt.legend(pie_chart_entries[0], legend_labels_entries, loc="lower center", bbox_to_anchor=(0.5, -0.2, 0, 0), fontsize='small')
+
+        plt.title(f"Distribuzione delle entrate per categorie - {year}\nAggiornato a {self.months_dict[int(sorted_movements[-1].data_valuta.strftime('%m'))]}")
         plt.get_current_fig_manager().set_window_title(f"Suddivisione categorie {self.months_dict[int(sorted_movements[-1].data_valuta.strftime('%m'))]} {year}")
+        plt.subplots_adjust(wspace=0.5)
         plt.show()
