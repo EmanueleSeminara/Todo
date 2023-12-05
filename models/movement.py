@@ -1,7 +1,8 @@
 # movement.py
 
 class Movement:
-    def __init__(self, nome, data_contabile, data_valuta, causale_abi, descrizione, category, amount, mv_type):
+    def __init__(self, nome, data_contabile, data_valuta, causale_abi, descrizione, category, amount, mv_type, id=None):
+        self.id = id
         self.name = nome
         self.data_contabile = data_contabile if data_contabile is not None else None
         self.data_valuta = data_valuta if data_valuta is not None else None

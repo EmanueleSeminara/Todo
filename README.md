@@ -1,4 +1,4 @@
-# ToDo App
+# [![emanueleseminara.it](https://github.com/EmanueleSeminara/images/blob/main/logo_e_20x20.png?raw=true)](https://emanueleseminara.it/) ToDo App [![emanueleseminara.it](https://github.com/EmanueleSeminara/images/blob/main/logo_e_20x20.png?raw=true)](https://emanueleseminara.it/) 
 
 Questo repository contiene un'applicazione di gestione delle attività "to-do" e dei movimenti finanziari. L'applicazione è progettata per aiutarti a tenere traccia dei tuoi compiti e delle tue transazioni finanziarie.
 
@@ -121,3 +121,9 @@ Esempi di comandi:
     ```
 
 Buona gestione delle attività e dei movimenti finanziari!
+
+## Donazioni [![Screen Grafico Entrate Uscite](https://github.com/EmanueleSeminara/images/blob/main/buy-me-a-coffee-logo-20x29.png?raw=true)](https://www.buymeacoffee.com/emanueleseminara)
+Il codice è qui per essere letto, modificato, adattato, riutilizzato, gratuitamente, fai quello che vuoi!
+Tuttavia, se desideri offrirmi un caffè o una birra, allora cin cin! =D
+
+[![QR](https://github.com/EmanueleSeminara/images/blob/main/bmc-button_small2.png?raw=true)](https://www.buymeacoffee.com/emanueleseminara)

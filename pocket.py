@@ -1,7 +1,7 @@
 # pocket.py
-from movement import Movement
+from models.movement import Movement
 from os import system
-from db import connect_db, add_movement, get_all_movements, delete_movement, get_all_categories, clean_movements, clean_movements_files
+from db import db, movements
 import json
 from math import ceil
 from datetime import datetime
@@ -14,15 +14,10 @@ import string
 import json
 
 
-
-
-
-
 class Pocket:
     def __init__(self, db_path):
-        self.conn = connect_db(db_path)
-        self.movements = get_all_movements(self.conn)
-        self.categories = get_all_categories(self.conn)
+        self.conn = db.connect_db(db_path)
+        self.movements = movements.get_all_movements(self.conn)
         self.months_dict = {
                                 1: 'Gennaio',
                                 2: 'Febbraio',
@@ -55,21 +50,17 @@ class Pocket:
 
         # Estrai la costante
         MOVEMENTS_RECORD_PAGE = data.get("MOVEMENTS_RECORD_PAGE")
-        self.recordPageNumber = MOVEMENTS_RECORD_PAGE
-
-        # Stampa la costante
-        print("MOVEMENTS_RECORD_PAGE:", MOVEMENTS_RECORD_PAGE)
+        MOVEMENTS_MAX_EXPENSES = data.get("MOVEMENTS_MAX_EXPENSES")
+        self.max_expenses = MOVEMENTS_MAX_EXPENSES
+        self.record_page_number = MOVEMENTS_RECORD_PAGE
 
     def aggiungi_movement(self, nome, data_contabile, data_valuta, causale_abi, descrizione, category, amount, mv_type):
-        #print(f"{data_contabile} - {amount}")
         data_valuta = datetime.strptime(data_valuta, "%d/%m/%Y")
         data_contabile = datetime.strptime(data_contabile, "%d/%m/%Y")
         flag_priority = False
         if(category == ""):
             for key, list in self.word_category.items():
-                for val in list:
-                    if(val.upper() == "di trapa"):
-                        print(f"{val.upper() in descrizione.upper()} - {val.upper()} - {descrizione.upper()}")
+                for val in list['keywords']:
                     if(val.upper() in descrizione.upper()):
                         category = key
                         flag_priority = True
@@ -79,9 +70,8 @@ class Pocket:
         if(category == ""):
             category = "Altro"
         movement = Movement(nome, data_contabile, data_valuta, causale_abi, descrizione, category, amount, mv_type)
-        #print(movement)
-        add_movement(self.conn, movement)
-        self.movements = get_all_movements(self.conn)
+        movements.add_movement(self.conn, movement)
+        self.movements = movements.get_all_movements(self.conn)
     def mostra_movement(self):
         #movements = get_all_movements(self.conn)
         if not self.movements:
@@ -93,14 +83,14 @@ class Pocket:
             print("{:<3} {:<30} {:<10} {:<10} {:<10} {:<15}".format(movement.id, movement.name[:30], movement.data_contabile, movement.category, movement.amount, movement.type))
 
     def remove_movement(self, id):
-        delete_movement(self.conn, id)
-        self.movements = get_all_movements(self.conn)
+        movements.delete_movement(self.conn, id)
+        self.movements = movements.get_all_movements(self.conn)
 
     def mostra_movements_page(self, page, num_for_page = 3):
         if not self.movements:
             print(f"La lista dei movimenti e' vuota {self.movements}.")
             return
-        num_for_page = int(self.recordPageNumber)
+        num_for_page = int(self.record_page_number)
         if(page > ceil(len(self.movements)/num_for_page)):
             print(f"Pagina richiesta non presente.")
             return
@@ -124,9 +114,7 @@ class Pocket:
         print("| {:^3} | {:^30} | {:^17} | {:^17} | {:^15} | {:^12} | {:^15} |".format("ID", "Nome", "Data contabile", "Data valuta", "Categoria", "Cifra", "Tipologia"))
         print("{:<131}".format("-" * 131))
         for movement in mv_to_show:
-            #print(type(movement.data_valuta))
             if movement.data_valuta:
-                #print("PIPPO")
                 if isinstance(movement.data_valuta, datetime):
                     movement_data_valuta = f"{movement.data_valuta.strftime('%d')} {self.months_dict[int(movement.data_valuta.strftime('%m'))]} {movement.data_valuta.strftime('%y')}"
                     movement_data_contabile = f"{movement.data_valuta.strftime('%d')} {self.months_dict[int(movement.data_valuta.strftime('%m'))]} {movement.data_valuta.strftime('%y')}"
@@ -152,7 +140,7 @@ class Pocket:
 
         # Modifica la costante
         data["MOVEMENTS_RECORD_PAGE"] = movements_record_number  # Modifica il valore secondo le tue esigenze
-        self.recordPageNumber = movements_record_number
+        self.record_page_number = movements_record_number
         # Scrivi il file JSON aggiornato
         with open(file_path, "w") as json_file:
             json.dump(data, json_file, indent=2)
@@ -163,11 +151,11 @@ class Pocket:
         return self.categories
 
     def clean_all(self):
-        clean_movements(self.conn)
-        clean_movements_files(self.conn)
+        movements.clean_movements(self.conn)
+        movements.clean_movements_files(self.conn)
         self.movements = []
     
-    def stats_movements(self, year):
+    def stats_movements(self, year, input_month):
         if not self.movements:
             print(f"La lista dei movimenti e' vuota {self.movements}.")
             return
@@ -180,7 +168,12 @@ class Pocket:
         for movement in self.movements:
             
             if(movement.data_valuta.year == year):
-                stats_movements.append(movement)
+                if(int(input_month) != -1 ):
+                    if(int(movement.data_valuta.month) == int(input_month)):
+                        stats_movements.append(movement)
+                else:
+                    stats_movements.append(movement)
+                
                 month = int(movement.data_valuta.strftime("%m"))
                 
                 if month not in month_stats:
@@ -200,7 +193,6 @@ class Pocket:
 
         print(f"USCITE: {uscite_totali} - ENTRATE: {entrate_totali} - TOT: {entrate_totali - uscite_totali}\n\n")
         month_stats = dict(sorted(month_stats.items()))
-        print(month_stats)
 
         # Creazione dell'istogramma
         months = [self.months_dict[val] for val in month_stats.keys()]
@@ -229,6 +221,7 @@ class Pocket:
         # Aggiungi le linee orizzontali per la media delle entrate e delle uscite
         ax.axhline(y=media_entrate, color='green', linestyle='--', label=f'Media Entrate: {media_entrate:.2f}€')
         ax.axhline(y=media_uscite, color='red', linestyle='--', label=f'Media Uscite: {media_uscite:.2f}€')
+        ax.axhline(y=float(self.max_expenses), color='yellow', linestyle='--', label=f'Soglia Uscite: {float(self.max_expenses):.2f}€')
 
         # Aggiungi le cifre in cima ad ogni barra con il simbolo dell'euro
         for i, value in enumerate(entrate):

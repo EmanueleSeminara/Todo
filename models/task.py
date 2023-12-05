@@ -2,9 +2,9 @@
 from datetime import datetime
 
 class Task:
-    def __init__(self, name, date, category):
+    def __init__(self, name, date, category, id=None):
+        self.id = id
         self.name = name
-        #print(date)
         self.date = date if date is not None else None
         try:
             self.category = int(category) if category is not None else None

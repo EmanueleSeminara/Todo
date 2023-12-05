@@ -1,9 +1,9 @@
 # category.py
 
 class Category:
-    def __init__(self, name):
+    def __init__(self, name, id=None):
         self.name = name
-
+        self.id = id
 
     def set_id(self, id):
         self.id = id

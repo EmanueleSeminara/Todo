@@ -6,3 +6,5 @@ temp/*
 .env
 *.json
 *.BKT
+*.log
+*.OLD
