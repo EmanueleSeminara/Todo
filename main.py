@@ -5,7 +5,6 @@ from os import system, name
 from models.task import Task
 from db import db, categories
 from utils import rimuovi_vecchio_db, start, clear_screen, start_message, error_message, process_directory, help_message, check_basic_folder
-from models.category import Category
 from datetime import datetime
 from prompt_toolkit import prompt
 from prompt_toolkit.history import InMemoryHistory
@@ -82,7 +81,7 @@ def main():
         elif scelta[0] in ("C", "CONFIG"):
             handle_config(logger, pocket, todo_list)
         elif tipo in ("TSK", "TASK"):
-            handle_task_operations(scelta, tipo, number_page, todo_list)
+            handle_task_operations(scelta, number_page, todo_list)
         elif tipo in ("MV", "MOVEMENT"):
             handle_movement_operations(scelta, number_page, month_stats, pocket)
         else:
@@ -163,7 +162,7 @@ def handle_clean_tasks(logger, todo_list):
     if confirm.upper() in ("Y", "YES"):
         todo_list.clean_all()
 
-def handle_task_operations(scelta, tipo, number_page, todo_list):
+def handle_task_operations(scelta, number_page, todo_list):
     if scelta in ("A", "ADD"):
         handle_add_task(todo_list)
     elif (scelta == "L" or scelta == "LIST") and number_page > 0:
@@ -178,8 +177,6 @@ def handle_task_operations(scelta, tipo, number_page, todo_list):
         handle_remove_task(todo_list)
     elif scelta in ("E", "EDIT") and number_page > 0:
         handle_edit_task(todo_list, number_page)
-    elif scelta == "E" or scelta == "EDIT":
-        handle_edit_task_menu(todo_list)
 
 def handle_add_task(todo_list):
     clear_screen()

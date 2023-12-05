@@ -110,9 +110,9 @@ class Pocket:
 
         mv_to_show = sorted_movements[i : j]
         
-        print("{:<131}".format("-" * 131))
-        print("| {:^3} | {:^30} | {:^17} | {:^17} | {:^15} | {:^12} | {:^15} |".format("ID", "Nome", "Data contabile", "Data valuta", "Categoria", "Cifra", "Tipologia"))
-        print("{:<131}".format("-" * 131))
+        print("{:<141}".format("-" * 141))
+        print("| {:^3} | {:^30} | {:^17} | {:^17} | {:^25} | {:^12} | {:^15} |".format("ID", "Nome", "Data contabile", "Data valuta", "Categoria", "Cifra", "Tipologia"))
+        print("{:<141}".format("-" * 141))
         for movement in mv_to_show:
             if movement.data_valuta:
                 if isinstance(movement.data_valuta, datetime):
@@ -125,10 +125,10 @@ class Pocket:
                 movement_data_valuta = ""
                 movement_data_contabile = ""
 
-            print("| {:^3} | {:^30} | {:^17} | {:^17} | {:^15} | {:^12} | {:^15} |".format(movement.id, movement.name[:30], movement_data_contabile, movement_data_valuta, movement.category, movement.amount, movement.type))
-        print("{:<131}".format("-" * 131))
-        print("| {:<42}{:^43}{:>42} |".format(f"TOT: {len(self.movements)}", "Pagina " + str(page + 1) + " di " + str(ceil(len(self.movements)/num_for_page)), "SOMMA MOVIMENTI: {:.2f}".format(amount_sum)))
-        print("{:<131}".format("-" * 131))
+            print("| {:^3} | {:^30} | {:^17} | {:^17} | {:^25} | {:^12} | {:^15} |".format(movement.id, movement.name[:30], movement_data_contabile, movement_data_valuta, movement.category, movement.amount, movement.type))
+        print("{:<141}".format("-" * 141))
+        print("| {:<45}{:^47}{:>45} |".format(f"TOT: {len(self.movements)}", "Pagina " + str(page + 1) + " di " + str(ceil(len(self.movements)/num_for_page)), "SOMMA MOVIMENTI: {:.2f}".format(amount_sum)))
+        print("{:<141}".format("-" * 141))
 
     def setRecordPage(self, movements_record_number):
         # Nome del file JSON
