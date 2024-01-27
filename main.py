@@ -226,11 +226,12 @@ def handle_edit_task(todo_list, number_page):
         print(f"Seleziona cosa modificare:\n1. Nome\n2. Categoria\n3. Data\n")
 
         resp = input("> ")
+        new_task = None
         if resp == '1':
             task_name = input("Nome: ")
             new_task = Task(task_name, old_task.date, old_task.category)
         elif resp == '2':
-            handle_edit_task_category(todo_list, old_task)
+            new_task = handle_edit_task_category(todo_list, old_task)
         elif resp == '3':
             task_date = input("Data: ")
             task_date = datetime.strptime(task_date, "%d/%m/%Y")
@@ -251,6 +252,7 @@ def handle_edit_task_category(todo_list, old_task):
         print(f"La variabile '{category_input}' non è contenuta nella lista di oggetti.")
         # prevedere aggiunta nuova categoria se non presente
     new_task = Task(old_task.name, old_task.date, category_id)
+    return new_task
 
 def handle_movement_operations(scelta, number_page, month_stats, pocket):
     if scelta in ("A", "ADD"):

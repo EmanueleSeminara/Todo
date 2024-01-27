@@ -72,7 +72,12 @@ class TodoList:
         if(page > ceil(len(self.tasks)/num_for_page)):
             print(f"Pagina richiesta non presente.")
             return
-        
+        class Style():
+            RED = "\033[31m"
+            GREEN = "\033[32m"
+            BLUE = "\033[34m"
+            RESET = "\033[0m"
+
         j = int(page) * int(num_for_page)
         page = int(page - 1)
         i = page if page == 0 else page * num_for_page
@@ -83,7 +88,7 @@ class TodoList:
         task_to_show = sorted_tasks[i : j]
         
         print("{:<135}".format("-" * 135))
-        print("| {:^3} | {:^80} | {:^17} | {:^22} |".format("ID", "Nome", "Data", "Categoria"))
+        print(f"{Style.BLUE}{'| {:^3} | {:^80} | {:^17} | {:^22} |'.format('ID', 'Nome', 'Data', 'Categoria')}{Style.RESET}")
         print("{:<135}".format("-" * 135))
         for task in task_to_show:
             category_name = next((category_item.name for category_item in self.categories if category_item.id == task.category), "")
@@ -91,13 +96,21 @@ class TodoList:
             task_name = task.name if task.name is not None else ""
             if task.date:
                 if isinstance(task.date, datetime):
-                    task_date = f"{task.date.strftime('%d')} {self.months_dict[int(task.date.strftime('%m'))]} {task.date.strftime('%y')}"
+                    if(task.date < datetime.now()):
+                        task_date = f"{Style.RED}{task.date.strftime('%d')} {self.months_dict[int(task.date.strftime('%m'))]} {task.date.strftime('%y')}{Style.RESET}"
+                    else:
+                        task_date = f"{task.date.strftime('%d')} {self.months_dict[int(task.date.strftime('%m'))]} {task.date.strftime('%y')}"
                 else:
                     task_date = task.date
             else:
                 task_date = ""
-            print("| {:^3} | {:<80} | {:^17} | {:^22} |".format(task_id, task_name, task_date, category_name))
-        print("{:<135}".format("-" * 135))
+        
+            line = "| {:^3} | {:<80} | {:^17} | {:^22} |".format(task_id, task_name, task_date, category_name)
+
+            print(f"{line}")
+            print("{:<135}".format("-" * 135))
+            
+        # print("{:<135}".format("-" * 135))
         print("| {:<44}{:^44}{:>43} |".format(f"TOT: {len(self.tasks)}", "Pagina " + str(page + 1) + " di " + str(ceil(len(self.tasks)/num_for_page)), ""))
         print("{:<135}".format("-" * 135))
 
