@@ -47,13 +47,15 @@ class TodoList:
         self.tasks = tasks.get_all_tasks(self.conn)
 
     def mostra_task(self):
-        if not self.tasks:
-            print(f"La lista delle attivita' e' vuota {self.tasks}.")
-            return
+        self.tasks = tasks.get_all_tasks(self.conn)
+        return sorted(self.tasks, key=lambda x: x.date)
+        # if not self.tasks:
+        #     print(f"La lista delle attivita' e' vuota {self.tasks}.")
+        #     return
 
-        print("{:<3} {:<40} {:<8} {:<15}".format("ID", "Nome", "Data", "Categoria"))
-        for task in self.tasks:
-            print("{:<3} {:<40} {:<8} {:<15}".format(task.id, task.name[:30], task.date.strftime('%d/%m'), task.category))
+        # print("{:<3} {:<40} {:<8} {:<15}".format("ID", "Nome", "Data", "Categoria"))
+        # for task in self.tasks:
+        #     print("{:<3} {:<40} {:<8} {:<15}".format(task.id, task.name[:30], task.date.strftime('%d/%m'), task.category))
 
     def remove_task(self, id):
         tasks.delete_task(self.conn,  id)

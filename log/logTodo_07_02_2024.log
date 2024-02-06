@@ -1,0 +1,40 @@
+2024-02-07 00:07:48,476 - INFO - 
+
+----- INIZIO PROCEDURE DI AVVIO -----
+
+2024-02-07 00:07:48,476 - INFO - File config.json aggiornato con successo nella directory del progetto.
+2024-02-07 00:07:48,476 - INFO - Categorie aggiunte al file config_data.
+2024-02-07 00:07:48,476 - INFO - -------- Avvio ToDo --------
+2024-02-07 00:07:48,476 - INFO - db path: db/todo.db - db temp path: temp/temp.dp
+2024-02-07 00:07:48,686 - INFO - Connesso al db temp
+2024-02-07 00:07:48,688 - INFO - File temp/temp.dp rimosso con successo.
+2024-02-07 00:08:41,371 - INFO - 
+
+----- INIZIO PROCEDURE DI AVVIO -----
+
+2024-02-07 00:08:41,372 - INFO - File config.json aggiornato con successo nella directory del progetto.
+2024-02-07 00:08:41,372 - INFO - Categorie aggiunte al file config_data.
+2024-02-07 00:08:41,372 - INFO - -------- Avvio ToDo --------
+2024-02-07 00:08:41,372 - INFO - db path: db/todo.db - db temp path: temp/temp.dp
+2024-02-07 00:08:41,581 - INFO - Connesso al db temp
+2024-02-07 00:08:41,583 - INFO - File temp/temp.dp rimosso con successo.
+2024-02-07 00:17:55,121 - INFO - 
+
+----- INIZIO PROCEDURE DI AVVIO -----
+
+2024-02-07 00:17:55,122 - INFO - File config.json aggiornato con successo nella directory del progetto.
+2024-02-07 00:17:55,122 - INFO - Categorie aggiunte al file config_data.
+2024-02-07 00:17:55,122 - INFO - -------- Avvio ToDo --------
+2024-02-07 00:17:55,122 - INFO - db path: db/todo.db - db temp path: temp/temp.dp
+2024-02-07 00:17:55,351 - INFO - Connesso al db temp
+2024-02-07 00:17:55,356 - INFO - File temp/temp.dp rimosso con successo.
+2024-02-07 00:27:25,064 - INFO - 
+
+----- INIZIO PROCEDURE DI AVVIO -----
+
+2024-02-07 00:27:25,065 - INFO - File config.json aggiornato con successo nella directory del progetto.
+2024-02-07 00:27:25,065 - INFO - Categorie aggiunte al file config_data.
+2024-02-07 00:27:25,065 - INFO - -------- Avvio ToDo --------
+2024-02-07 00:27:25,065 - INFO - db path: db/todo.db - db temp path: temp/temp.dp
+2024-02-07 00:27:25,555 - INFO - Connesso al db temp
+2024-02-07 00:27:25,557 - INFO - File temp/temp.dp rimosso con successo.

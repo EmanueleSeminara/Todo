@@ -1,0 +1,20 @@
+2024-02-05 20:34:53,091 - INFO - 
+
+----- INIZIO PROCEDURE DI AVVIO -----
+
+2024-02-05 20:34:53,092 - INFO - File config.json aggiornato con successo nella directory del progetto.
+2024-02-05 20:34:53,092 - INFO - Categorie aggiunte al file config_data.
+2024-02-05 20:34:53,092 - INFO - -------- Avvio ToDo --------
+2024-02-05 20:34:53,092 - INFO - db path: db/todo.db - db temp path: temp/temp.dp
+2024-02-05 20:34:53,303 - INFO - Connesso al db temp
+2024-02-05 20:34:53,305 - INFO - File temp/temp.dp rimosso con successo.
+2024-02-05 20:43:10,976 - INFO - 
+
+----- INIZIO PROCEDURE DI AVVIO -----
+
+2024-02-05 20:43:10,976 - INFO - File config.json aggiornato con successo nella directory del progetto.
+2024-02-05 20:43:10,976 - INFO - Categorie aggiunte al file config_data.
+2024-02-05 20:43:10,976 - INFO - -------- Avvio ToDo --------
+2024-02-05 20:43:10,976 - INFO - db path: db/todo.db - db temp path: temp/temp.dp
+2024-02-05 20:43:11,293 - INFO - Connesso al db temp
+2024-02-05 20:43:11,295 - INFO - File temp/temp.dp rimosso con successo.

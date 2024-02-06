@@ -4,12 +4,24 @@ from pocket import Pocket
 from os import system, name
 from models.task import Task
 from db import db, categories
-from utils import rimuovi_vecchio_db, start, clear_screen, start_message, error_message, process_directory, help_message, check_basic_folder
+from utils import (
+    rimuovi_vecchio_db, start, clear_screen, start_message,
+    error_message, process_directory, help_message,
+    check_basic_folder
+)
 from datetime import datetime
 from prompt_toolkit import prompt
 from prompt_toolkit.history import InMemoryHistory
 import logging
 from logging.handlers import TimedRotatingFileHandler
+from pathlib import Path
+from data import *
+
+# Import tkinter modules selectively
+from tkinter import (
+    Tk, Canvas, Entry, Text, Button, PhotoImage, ttk, 
+    messagebox, simpledialog, Toplevel
+)
 
 
 def main():
@@ -43,50 +55,9 @@ def main():
     pocket = Pocket(db_path)
     first = True
     history = InMemoryHistory()
+    
+    window.mainloop()
 
-    while True:
-        if first:
-            clear_screen()
-            print(start_message())
-            first = False
-
-        print("\nOption: [A]dd [L]ist [S]elect [R]emove [E]dit [H]elp [EX]it")
-        scelta = prompt('> ', history=history).upper().split()
-        tipo = ""
-        number_page = -1
-        month_stats = -1
-
-        if len(scelta) == 0:
-            print(error_message())
-            continue
-        if len(scelta) == 2:
-            tipo = scelta[0]
-            scelta = scelta[1]
-        elif len(scelta) == 3:
-            tipo = scelta[0]
-            number_page = int(scelta[2])
-            scelta = scelta[1]
-        elif len(scelta) == 4:
-            month_stats = scelta[3]
-            tipo = scelta[0]
-            number_page = int(scelta[2])
-            scelta = scelta[1]
-
-        if scelta[0] in ("H", "HELP"):
-            clear_screen()
-            print(help_message())
-            continue
-        elif scelta[0] in ("EX", "EXIT"):
-            break
-        elif scelta[0] in ("C", "CONFIG"):
-            handle_config(logger, pocket, todo_list)
-        elif tipo in ("TSK", "TASK"):
-            handle_task_operations(scelta, number_page, todo_list)
-        elif tipo in ("MV", "MOVEMENT"):
-            handle_movement_operations(scelta, number_page, month_stats, pocket)
-        else:
-            clear_screen()
-            print(error_message())
 
 def configure_logger():
     logger = logging.getLogger(__name__)
@@ -106,90 +77,46 @@ def configure_logger():
 
     return logger
 
-def handle_config(logger, pocket, todo_list):
-    clear_screen()
-    print("--------- CONFIG ----------")
-    print("1. Record per pagina Movimenti")
-    print("2. Record per pagina Tasks")
-    print("3. Importa transazioni")
-    print("4. Pulisci movimenti")
-    print("5. Pulisci task")
+# INIZIO INTERFACCIA GRAFICA
 
-    scelta = input("> ").upper()
-    if scelta in ("EX", "EXIT"):
-        return
+def ricarica_tabella():
+    print("RICARICA TABELLA")
+    # Pulisci la tabella
+    print(table.get_children())
+    for row in table.get_children():
+        print(row)
+        table.delete(row)
 
-    if scelta == "1":
-        handle_config_record_page(pocket)
-    elif scelta == "2":
-        handle_config_record_page(todo_list)
-    elif scelta == "3":
-        handle_import_transactions(logger, pocket)
-    elif scelta == "4":
-        handle_clean_movements(logger, pocket)
-    elif scelta == "5":
-        handle_clean_tasks(logger, todo_list)
+    # Ottieni i nuovi dati e inseriscili nella tabella
+    print(todo_list.mostra_task()[-1])
+    for row_data in todo_list.mostra_task():
+        line = [row_data.id, row_data.name, row_data.date]
+        table.insert(parent="", index="end", values=line)
 
-def handle_config_record_page(obj):
-    clear_screen()
-    print(f"Valore attuale: {obj.record_page_number}")
-    num = input("Inserisci record per pagina: ")
-    if num in ("EX", "EXIT"):
-        return
-    obj.setRecordPage(num)
+def add_task():
+    task_name = simpledialog.askstring("Aggiungi Task", "Inserisci un nuovo task:")
+    if task_name:
+        category = simpledialog.askstring("Aggiungi Task", "Inserisci la categoria:")
+        due_date = simpledialog.askstring("Aggiungi Task", "Inserisci la data (formato: DD/MM/YYYY):")
 
-def handle_import_transactions(logger, pocket):
-    path = "./csv"
-    directory_path = path
-    movements, saldo_data, saldo = process_directory(directory_path, logger)
-    if movements:
-        header = movements[0]
-        movements = movements[1:]
-        for row_movements in movements:
-            pocket.aggiungi_movement("", row_movements[0], row_movements[1], row_movements[2], row_movements[3], "", row_movements[4], "")
+        if due_date:
+            try:
+                due_date = datetime.strptime(due_date, "%d/%m/%Y")
+            except ValueError:
+                messagebox.showerror("Errore", "Formato data non valido. Utilizza il formato YYYY-MM-DD.")
+                return
 
-def handle_clean_movements(logger, pocket):
-    confirm = input("Sei sicuro di voler eliminare tutti i movimenti: ")
-    if confirm in ("EX", "EXIT"):
-        return
-    if confirm.upper() in ("Y", "YES"):
-        pocket.clean_all()
-
-def handle_clean_tasks(logger, todo_list):
-    confirm = input("Sei sicuro di voler eliminare tutti i tasks: ")
-    if confirm in ("EX", "EXIT"):
-        return
-    if confirm.upper() in ("Y", "YES"):
-        todo_list.clean_all()
-
-def handle_task_operations(scelta, number_page, todo_list):
-    if scelta in ("A", "ADD"):
-        handle_add_task(todo_list)
-    elif (scelta == "L" or scelta == "LIST") and number_page > 0:
-        clear_screen()
-        todo_list.mostra_tasks_page(int(number_page))
-    elif scelta == "L" or scelta == "LIST":
-        clear_screen()
-        todo_list.mostra_task()
-    elif scelta in ("S", "SELECT") and number_page > 0:
-        handle_view_task(todo_list, number_page)
-    elif scelta == "R" or scelta == "REMOVE":
-        handle_remove_task(todo_list)
-    elif scelta in ("E", "EDIT") and number_page > 0:
-        handle_edit_task(todo_list, number_page)
-
-def handle_add_task(todo_list):
-    clear_screen()
-    print("----- Aggiunta nuovo task ------")
-    nome = input("Nome: ")
-    data = input("Data: ")
-    data = datetime.strptime(data, "%d/%m/%Y")
-    if data < datetime.now():
-        input_past_date = input("Data nel passato, confermare: ").upper()
-        if input_past_date in ("N", "NO"):
-            return
-    print(*todo_list.categories)
-    category_input = input("Categoria: ")
+        task = {"name": task_name, "category": category, "due_date": due_date}
+        # self.tasks.append(task)
+        # self.refresh_listbox()
+    #data = datetime.strptime(data, "%d/%m/%Y")
+    # if data < datetime.now():
+    #     input_past_date = input("Data nel passato, confermare: ").upper()
+    #     if input_past_date in ("N", "NO"):
+    #         return
+    category_input = category
+    db_path = "db/todo.db"
+    todo_list = TodoList(db_path)
     found_category = next((category for category in todo_list.categories if category_input.upper() == category.name.upper()), None)
     if found_category:
         category_id = found_category.id
@@ -198,100 +125,237 @@ def handle_add_task(todo_list):
         category_id = None
         print(f"La variabile '{category_input}' non è contenuta nella lista di oggetti.")
         # prevedere aggiunta nuova categoria se non presente
-    todo_list.aggiungi_task(nome, data, category_id)
+    todo_list.aggiungi_task(task_name, due_date, category_id)
     print("Task aggiunto con successo!")
-    input()
-    clear_screen()
+    ricarica_tabella()
 
-def handle_view_task(todo_list, number_page):
-    clear_screen()
-    print(f"----- VISUALIZZAZIONE TASK ID {number_page} ------")
-    task_to_show = todo_list.get_task(number_page)
-    real_category = next((category for category in todo_list.categories if task_to_show.category == category.id), None)
-    real_date = f"{task_to_show.date.strftime('%d')} {todo_list.months_dict[int(task_to_show.date.strftime('%m'))]} {task_to_show.date.strftime('%y')}"
-    print(f"ID: {task_to_show.id}\nNome: {task_to_show.name}\nCategoria: {real_category}\nData: {real_date}\n\n")
+OUTPUT_PATH = Path(__file__).parent
+ASSETS_PATH = OUTPUT_PATH / Path(r"/home/zifro/git/Tkinter-Designer/build/assets/frame0")
 
-def handle_remove_task(todo_list):
-    task_id = input("Inserire l'id del task da rimuovere: ")
-    todo_list.remove_task(task_id)
+def relative_to_assets(path: str) -> Path:
+    return ASSETS_PATH / Path(path)
 
-def handle_edit_task(todo_list, number_page):
-    clear_screen()
-    old_task = todo_list.get_task(number_page)
-    if old_task is not None:
-        real_category = next((category for category in todo_list.categories if old_task.category == category.id), None)
-        real_date = f"{old_task.date.strftime('%d')} {todo_list.months_dict[int(old_task.date.strftime('%m'))]} {old_task.date.strftime('%y')}"
-        print(f"----- MODIFICA TASK ID {number_page} -----")
-        print(f"ID: {number_page}\nNome: {old_task.name}\nCategoria: {real_category}\nData: {real_date}\n\n")
-        print(f"Seleziona cosa modificare:\n1. Nome\n2. Categoria\n3. Data\n")
 
-        resp = input("> ")
-        new_task = None
-        if resp == '1':
-            task_name = input("Nome: ")
-            new_task = Task(task_name, old_task.date, old_task.category)
-        elif resp == '2':
-            new_task = handle_edit_task_category(todo_list, old_task)
-        elif resp == '3':
-            task_date = input("Data: ")
-            task_date = datetime.strptime(task_date, "%d/%m/%Y")
-            new_task = Task(old_task.name, task_date, old_task.category)
+window = Tk()
 
-        new_task.set_id(number_page)
-        todo_list.mod_task(number_page, new_task)
+window.geometry("862x480")
+window.configure(bg = "#FFFFFF")
 
-def handle_edit_task_category(todo_list, old_task):
-    print(*todo_list.categories)
-    category_input = input("Categoria: ")
-    found_category = next((category for category in todo_list.categories if category_input.upper() == category.name.upper()), None)
-    if found_category:
-        category_id = found_category.id
-        print(f"La variabile '{category_input}' è contenuta nella lista di oggetti. ID della categoria: {category_id}")
+
+canvas = Canvas(
+    window,
+    bg = "#FFFFFF",
+    height = 480,
+    width = 862,
+    bd = 0,
+    highlightthickness = 0,
+    relief = "ridge"
+)
+
+canvas.place(x = 0, y = 0)
+canvas.create_rectangle(
+    0.0,
+    0.0,
+    862.0,
+    74.0,
+    fill="#2C41B1",
+    outline="")
+
+canvas.create_text(
+    57.0,
+    19.0,
+    anchor="nw",
+    text="Dashboard",
+    fill="#FFFFFF",
+    font=("Inter Bold", 30 * -1)
+)
+
+image_image_1 = PhotoImage(
+    file=relative_to_assets("image_1.png"))
+image_1 = canvas.create_image(
+    326.0,
+    276.0,
+    image=image_image_1
+)
+
+# Creating Table
+
+table = ttk.Treeview(master=window, columns=table_columns, show="headings")
+
+width = 0
+for column in table_columns:
+    print(column)
+    if(column.upper() in ("ID")):
+        width = 35
+    elif(column.upper() in ("NOME")):
+        width = 350
+    elif(column.upper() in ("DATA")):
+        width = 80
+    elif(column.upper() in ("CATEGORIA")):
+        width = 100
+    elif(column.upper() in ("FREQUENZA")):
+        width = 30
     else:
-        category_id = None
-        print(f"La variabile '{category_input}' non è contenuta nella lista di oggetti.")
-        # prevedere aggiunta nuova categoria se non presente
-    new_task = Task(old_task.name, old_task.date, category_id)
-    return new_task
+        width = 5
+    table.heading(column=column, text=column)
+    table.column(column=column, width=width)
 
-def handle_movement_operations(scelta, number_page, month_stats, pocket):
-    if scelta in ("A", "ADD"):
-        handle_add_movement(pocket)
-    elif (scelta == "L" or scelta == "LIST") and number_page > 0:
-        clear_screen()
-        pocket.mostra_movements_page(int(number_page))
-    elif scelta == "L" or scelta == "LIST":
-        clear_screen()
-        pocket.mostra_movement()
-        input()
-    elif scelta in ("R", "REMOVE"):
-        handle_remove_movement(pocket)
-    elif scelta in ("S", "STATS"):
-        handle_stats_movement(number_page, month_stats, pocket)
+db_path = "db/todo.db"
+todo_list = TodoList(db_path)
 
-def handle_add_movement(pocket):
-    clear_screen()
-    print("----- Aggiunta nuovo movement ------")
-    nome = input("Nome: ")
-    data = input("Data:: ")
-    category = input("Categoria: ")
-    cifra = input("Cifra: ")
-    tipologia = input("Tipologia: ")
-    pocket.aggiungi_movement(nome, data, data, "", "", category, cifra, tipologia)
-    print("Movimento aggiunto con successo!")
-    input()
-    clear_screen()
 
-def handle_remove_movement(pocket):
-    mv_id = input("ID del movimento da RIMUOVERE: ")
-    pocket.remove_movement(mv_id)
+for row_data in todo_list.mostra_task():
+    line = [row_data.id, row_data.name, row_data.date]
+    table.insert(parent="", index="end", values=line)
 
-def handle_stats_movement(number_page, month_stats, pocket):
-    if number_page == -1:
-        number_page = datetime.now().year
-        pocket.stats_movements(number_page, month_stats)
-    elif int(number_page) in [2023] and int(month_stats) in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]:
-        pocket.stats_movements(number_page, month_stats)
+style = ttk.Style()
+style.theme_use("default")
+style.configure("Treeview", font=("Arial", 12), background="#917FB3", fieldbackground="#917FB3", foreground="white")
+style.configure("Treeview.Heading", background="#917FB3", fieldbackground="#917FB3", foreground="white")
+style.map("Treeview", background=[("selected", "#E5BEEC")])
+
+def item_selected(event):
+    for selected_item in table.selection():
+        item = table.item(selected_item)
+        record = item['values']
+        print(record)
+        # show a message
+        # showinfo(title='Information', message=record)
+
+def show_full_info(event):
+    for selected_item in table.selection():
+        item = table.item(selected_item)
+        record = item['values']
+
+        # Creazione di una nuova finestra
+        info_window = Toplevel(window)
+        info_window.title("Informazioni complete")
+
+        # Aggiungi widget e visualizza le informazioni complete nella nuova finestra
+        for col, val in zip(table_columns, record):
+            label = ttk.Label(info_window, text=f"{col}: {val}")
+            label.pack(padx=10, pady=5)
+
+def complete_task():
+    print(table.selection())
+    for selected_item in table.selection():
+        item = table.item(selected_item)
+        record = item['values']
+        print(record)
+        todo_list.remove_task(record[0])
+    
+
+table.bind('<Double-1>', show_full_info)
+table.bind('<<TreeviewSelect>>', item_selected)
+
+table.place(x=25, y=100, height=350)
+
+image_image_2 = PhotoImage(
+    file=relative_to_assets("image_2.png"))
+image_2 = canvas.create_image(
+    767.0,
+    37.0,
+    image=image_image_2
+)
+
+image_image_3 = PhotoImage(
+    file=relative_to_assets("image_3.png"))
+image_3 = canvas.create_image(
+    819.0,
+    37.0,
+    image=image_image_3
+)
+
+image_image_4 = PhotoImage(
+    file=relative_to_assets("image_4.png"))
+image_4 = canvas.create_image(
+    30.0,
+    37.0,
+    image=image_image_4
+)
+
+button_image_1 = PhotoImage(
+    file=relative_to_assets("button_1.png"))
+button_1 = Button(
+    image=button_image_1,
+    borderwidth=0,
+    highlightthickness=0,
+    command=add_task,
+    relief="flat"
+)
+button_1.place(
+    x=655.0,
+    y=92.0,
+    width=196.0,
+    height=56.0
+)
+
+button_image_2 = PhotoImage(
+    file=relative_to_assets("button_2.png"))
+button_2 = Button(
+    image=button_image_2,
+    borderwidth=0,
+    highlightthickness=0,
+    command=complete_task,
+    relief="flat"
+)
+button_2.place(
+    x=655.0,
+    y=159.0,
+    width=196.0,
+    height=56.0
+)
+
+button_image_3 = PhotoImage(
+    file=relative_to_assets("button_3.png"))
+button_3 = Button(
+    image=button_image_3,
+    borderwidth=0,
+    highlightthickness=0,
+    command=lambda: print("button_3 clicked"),
+    relief="flat"
+)
+button_3.place(
+    x=655.0,
+    y=226.0,
+    width=196.0,
+    height=56.0
+)
+
+button_image_4 = PhotoImage(
+    file=relative_to_assets("button_4.png"))
+button_4 = Button(
+    image=button_image_4,
+    borderwidth=0,
+    highlightthickness=0,
+    command=lambda: print("button_4 clicked"),
+    relief="flat"
+)
+button_4.place(
+    x=655.0,
+    y=293.0,
+    width=196.0,
+    height=56.0
+)
+
+button_image_5 = PhotoImage(
+    file=relative_to_assets("button_5.png"))
+button_5 = Button(
+    image=button_image_5,
+    borderwidth=0,
+    highlightthickness=0,
+    command=ricarica_tabella,
+    relief="flat"
+)
+button_5.place(
+    x=655.0,
+    y=360.0,
+    width=196.0,
+    height=56.0
+)
+window.resizable(False, False)
+# FINE INTERFACCIAGRAFICA
 
 if(__name__ == "__main__"):
     main()
+    

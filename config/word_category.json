@@ -1,0 +1,182 @@
+{
+    "Stipendio": {
+        "keywords": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "min_entry": 0,
+        "max_expense": -1
+    },
+    "Prelievi": {
+        "keywords": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "min_entry": 0,
+        "max_expense": -1
+    },
+    "Spese Domestiche": {
+        "keywords": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "min_entry": 0,
+        "max_expense": -1
+    },
+    "Cibo e Generi Alimentari": {
+        "keywords": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "min_entry": 0,
+        "max_expense": -1
+    },
+    "Trasporti": {
+        "keywords": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "min_entry": 0,
+        "max_expense": -1
+    },
+    "Assicurazioni": {
+        "keywords": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "min_entry": 0,
+        "max_expense": -1
+    },
+    "Spese Mediche": {
+        "keywords": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "min_entry": 0,
+        "max_expense": -1
+    },
+    "Divertimento e Tempo Libero": {
+        "keywords": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "min_entry": 0,
+        "max_expense": -1
+    },
+    "Debiti e Prestiti": {
+        "keywords": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "min_entry": 0,
+        "max_expense": -1
+    },
+    "Risparmi e Investimenti": {
+        "keywords": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "min_entry": 0,
+        "max_expense": -1
+    },
+    "Educazione": {
+        "keywords": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "min_entry": 0,
+        "max_expense": -1
+    },
+    "Abbigliamento e Accessori": {
+        "keywords": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "min_entry": 0,
+        "max_expense": -1
+    },
+    "Emergenze": {
+        "keywords": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "min_entry": 0,
+        "max_expense": -1
+    },
+    "Vizi": {
+        "keywords": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "min_entry": 0,
+        "max_expense": -1
+    },
+    "Acquisti Online": {
+        "keywords": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "min_entry": 0,
+        "max_expense": -1
+    },
+    "Rimborsi": {
+        "keywords": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "min_entry": 0,
+        "max_expense": -1
+    },
+    "Abbonamenti": {
+        "keywords": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "min_entry": 0,
+        "max_expense": -1
+    },
+    "Regali": {
+        "keywords": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "min_entry": 0,
+        "max_expense": -1
+    },
+    "Bancomat pay": {
+        "keywords": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "min_entry": 0,
+        "max_expense": -1
+    },
+    "Paypal": {
+        "keywords": [
+            "PAROLA CHIAVE 1",
+            "PAROLA CHIAVE 2",
+            "PAROLA CHIAVE 3"
+        ],
+        "min_entry": 0,
+        "max_expense": -1
+    }
+}
