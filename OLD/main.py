@@ -3,8 +3,8 @@ from todolist import TodoList
 from pocket import Pocket
 from os import system, name
 from models.task import Task
-from db import db, categories
-from utils import rimuovi_vecchio_db, start, clear_screen, start_message, error_message, process_directory, help_message, check_basic_folder
+from db import db, categories, accounts
+from utils.utils import rimuovi_vecchio_db, start, clear_screen, start_message, error_message, process_directory, help_message, check_basic_folder
 from datetime import datetime
 from prompt_toolkit import prompt
 from prompt_toolkit.history import InMemoryHistory
@@ -118,13 +118,12 @@ def handle_config(logger, pocket, todo_list):
     scelta = input("> ").upper()
     if scelta in ("EX", "EXIT"):
         return
-
     if scelta == "1":
         handle_config_record_page(pocket)
     elif scelta == "2":
         handle_config_record_page(todo_list)
     elif scelta == "3":
-        handle_import_transactions(logger, pocket)
+        pocket.import_transactions(logger)
     elif scelta == "4":
         handle_clean_movements(logger, pocket)
     elif scelta == "5":
@@ -138,15 +137,7 @@ def handle_config_record_page(obj):
         return
     obj.setRecordPage(num)
 
-def handle_import_transactions(logger, pocket):
-    path = "./csv"
-    directory_path = path
-    movements, saldo_data, saldo = process_directory(directory_path, logger)
-    if movements:
-        header = movements[0]
-        movements = movements[1:]
-        for row_movements in movements:
-            pocket.aggiungi_movement("", row_movements[0], row_movements[1], row_movements[2], row_movements[3], "", row_movements[4], "")
+
 
 def handle_clean_movements(logger, pocket):
     confirm = input("Sei sicuro di voler eliminare tutti i movimenti: ")

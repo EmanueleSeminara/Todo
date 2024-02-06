@@ -2,8 +2,8 @@
 from models.movement import Movement
 
 def add_movement(conn, movement):
-    query = "INSERT INTO movements (name, data_contabile, data_valuta, causale_abi, descrizione, category, amount, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
-    conn.execute(query, (movement.name, movement.data_contabile, movement.data_valuta, movement.causale_abi, movement.descrizione, movement.category, movement.amount, movement.type))
+    query = "INSERT INTO movements (name, data_contabile, data_valuta, causale_abi, descrizione, category, amount, type, account_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    conn.execute(query, (movement.name, movement.data_contabile, movement.data_valuta, movement.causale_abi, movement.descrizione, movement.category, movement.amount, movement.type, movement.account_id))
     conn.commit()
 
 def clean_movements(conn):
@@ -11,7 +11,7 @@ def clean_movements(conn):
     conn.commit()
 
 def get_all_movements(conn):
-    query = "SELECT id, name, data_contabile, data_valuta, causale_abi, descrizione, category, amount, type FROM movements"
+    query = "SELECT id, name, data_contabile, data_valuta, causale_abi, descrizione, category, amount, type, account_id FROM movements"
     cursor = conn.execute(query)
     movements = [Movement(*movement_data[1:], id=movement_data[0]) for movement_data in cursor.fetchall()]
     return movements

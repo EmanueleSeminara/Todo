@@ -2,6 +2,7 @@ from db import movements
 from os import path, listdir, remove, system, name, makedirs, getcwd
 import csv, json
 from sqlite3 import connect, Connection, PARSE_DECLTYPES, PARSE_COLNAMES
+from datetime import datetime
 
 
 def process_directory(directory_path, logger):
@@ -23,12 +24,16 @@ def process_directory(directory_path, logger):
             logger.info(f"File '{file}' non presente nel database.")
             movements.add_movements_file(conn, file)
             csv_movements, saldo_data, saldo = process_csv_file(file_path)
+            print(f"{saldo} - result: {result_saldo}")
+            if(result_saldo_data == "" or result_saldo_data < datetime.strptime(saldo_data, "%d/%m/%Y")):
+                result_saldo_data = datetime.strptime(saldo_data, "%d/%m/%Y")
+                result_saldo = saldo
             if(i > 0):
                 csv_movements = csv_movements[1:]
             result_csv_movements.extend(csv_movements)
         else:
             logger.info(f"File '{file}' già presente nel database.")
-    
+    print(f"{result_saldo_data} - {result_saldo}")
     return result_csv_movements, result_saldo_data, result_saldo
 
 def check_basic_folder():
@@ -321,13 +326,13 @@ def update_word_category_format(input_path, output_path, logger):
         if isinstance(data, dict):
             updated_data = {
                 "keywords": data.get("keywords", []),
-                "min_entry": data.get("min_entry", 0),
+                "min_entry": data.get("min_entry", -1),
                 "max_expense": data.get("max_expense", -1)
             }
         elif isinstance(data, list):
             updated_data = {
                 "keywords": data,
-                "min_entry": 0,
+                "min_entry": -1,
                 "max_expense": -1
             }
         else:

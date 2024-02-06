@@ -1,10 +1,37 @@
 # db.py
 from sqlite3 import connect, Connection, PARSE_DECLTYPES, PARSE_COLNAMES
+import psycopg2
 
 def connect_db(db_path: str) -> Connection:
+    if "postgres" in db_path:
+        # Utilizza PostgreSQL
+        return connect_postgres(db_path)
+    else:
+        # Utilizza SQLite locale
+        return connect_sqlite(db_path)
+
+def connect_sqlite(db_path: str) -> Connection:
     conn = connect(db_path, detect_types=PARSE_DECLTYPES | PARSE_COLNAMES)
     create_tables(conn)
     return conn
+
+def connect_postgres(db_path: str) -> Connection:
+    # Imposta i parametri di connessione a PostgreSQL
+    conn_params = {
+        'dbname': 'todo',
+        'user': 'dbuser',
+        'password': 'pass1234',
+        'host': '192.168.1.21',
+        'port': '5432'  # Cambia la porta se necessario
+    }
+
+    conn = psycopg2.connect(**conn_params)
+    create_tables(conn)
+    return conn
+
+# Resto del codice rimane invariato
+# ...
+
 
 def create_tables(conn: Connection) -> None:
     tables = {
@@ -36,7 +63,9 @@ def create_tables(conn: Connection) -> None:
                 descrizione TEXT,
                 category TEXT NOT NULL,
                 amount REAL NOT NULL,
-                type TEXT NOT NULL
+                type TEXT NOT NULL,
+                account_id INTEGER,
+                FOREIGN KEY (account_id) REFERENCES accounts(id)
             )
         ''',
         'movements_files': '''
@@ -77,8 +106,10 @@ def create_tables(conn: Connection) -> None:
         '''
     }
 
+    cursor = conn.cursor()
+
     for table_name, table_query in tables.items():
-        conn.execute(table_query)
+        cursor.execute(table_query)
 
 def confronta_e_aggiorna(old_db_path: str, new_db_path: str) -> None:
     conn_old = connect(old_db_path)

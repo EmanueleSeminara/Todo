@@ -1,7 +1,8 @@
 # pocket.py
 from models.movement import Movement
+from models.account import Account
 from os import system
-from db import db, movements
+from db import db, movements, accounts
 import json
 from math import ceil
 from datetime import datetime
@@ -10,14 +11,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.ticker as ticker
 from collections import Counter
-import string
 import json
+from utils.utils import process_directory
 
 
 class Pocket:
     def __init__(self, db_path):
         self.conn = db.connect_db(db_path)
         self.movements = movements.get_all_movements(self.conn)
+        self.accounts = accounts.get_all_accounts(self.conn)
         self.months_dict = {
                                 1: 'Gennaio',
                                 2: 'Febbraio',
@@ -54,7 +56,7 @@ class Pocket:
         self.max_expenses = MOVEMENTS_MAX_EXPENSES
         self.record_page_number = MOVEMENTS_RECORD_PAGE
 
-    def aggiungi_movement(self, nome, data_contabile, data_valuta, causale_abi, descrizione, category, amount, mv_type):
+    def aggiungi_movement(self, nome, data_contabile, data_valuta, causale_abi, descrizione, category, amount, mv_type, account_id):
         data_valuta = datetime.strptime(data_valuta, "%d/%m/%Y")
         data_contabile = datetime.strptime(data_contabile, "%d/%m/%Y")
         flag_priority = False
@@ -69,7 +71,7 @@ class Pocket:
                     break
         if(category == ""):
             category = "Altro"
-        movement = Movement(nome, data_contabile, data_valuta, causale_abi, descrizione, category, amount, mv_type)
+        movement = Movement(nome, data_contabile, data_valuta, causale_abi, descrizione, category, amount, mv_type, account_id)
         movements.add_movement(self.conn, movement)
         self.movements = movements.get_all_movements(self.conn)
     def mostra_movement(self):
@@ -110,9 +112,9 @@ class Pocket:
 
         mv_to_show = sorted_movements[i : j]
         
-        print("{:<141}".format("-" * 141))
-        print("| {:^3} | {:^30} | {:^17} | {:^17} | {:^25} | {:^12} | {:^15} |".format("ID", "Nome", "Data contabile", "Data valuta", "Categoria", "Cifra", "Tipologia"))
-        print("{:<141}".format("-" * 141))
+        print("{:<143}".format("-" * 143))
+        print("| {:^5} | {:^30} | {:^17} | {:^17} | {:^25} | {:^12} | {:^15} |".format("ID", "Nome", "Data contabile", "Data valuta", "Categoria", "Cifra", "Tipologia"))
+        print("{:<143}".format("-" * 143))
         for movement in mv_to_show:
             if movement.data_valuta:
                 if isinstance(movement.data_valuta, datetime):
@@ -125,10 +127,10 @@ class Pocket:
                 movement_data_valuta = ""
                 movement_data_contabile = ""
 
-            print("| {:^3} | {:^30} | {:^17} | {:^17} | {:^25} | {:^12} | {:^15} |".format(movement.id, movement.name[:30], movement_data_contabile, movement_data_valuta, movement.category, movement.amount, movement.type))
-        print("{:<141}".format("-" * 141))
-        print("| {:<45}{:^47}{:>45} |".format(f"TOT: {len(self.movements)}", "Pagina " + str(page + 1) + " di " + str(ceil(len(self.movements)/num_for_page)), "SOMMA MOVIMENTI: {:.2f}".format(amount_sum)))
-        print("{:<141}".format("-" * 141))
+            print("| {:^5} | {:^30} | {:^17} | {:^17} | {:^25} | {:^12} | {:^15} |".format(movement.id, movement.name[:30], movement_data_contabile, movement_data_valuta, movement.category, movement.amount, movement.type))
+        print("{:<143}".format("-" * 143))
+        print("| {:<46}{:^47}{:>46} |".format(f"TOT: {len(self.movements)}", "Pagina " + str(page + 1) + " di " + str(ceil(len(self.movements)/num_for_page)), "SOMMA MOVIMENTI: {:.2f}".format(amount_sum)))
+        print("{:<143}".format("-" * 143))
 
     def setRecordPage(self, movements_record_number):
         # Nome del file JSON
@@ -307,3 +309,25 @@ class Pocket:
         plt.get_current_fig_manager().set_window_title(f"Suddivisione categorie {self.months_dict[int(sorted_movements[-1].data_valuta.strftime('%m'))]} {year}")
         plt.subplots_adjust(wspace=0.5)
         plt.show()
+
+    def import_transactions(self, logger):
+        path = "./csv"
+        directory_path = path
+        print(*self.accounts)
+        account_input = input("Account: ")
+        for account in self.accounts:
+            if(account.name.upper() == account_input.upper()):
+                account_id = int(account.id)
+                movements, data_saldo, saldo = process_directory(directory_path, logger)
+                print(f"{data_saldo} - {type(data_saldo)} - {account.data_saldo} - {type(account.data_saldo)}")
+                if(account.data_saldo is None or data_saldo > account.data_saldo):
+                    account.data_saldo = data_saldo
+                    account.saldo = saldo
+                    accounts.delete_account(self.conn, account.id)
+                    accounts.add_account(self.conn, account)
+                if movements:
+                    header = movements[0]
+                    movements = movements[1:]
+                    for row_movements in movements:
+                        self.aggiungi_movement("", row_movements[0], row_movements[1], row_movements[2], row_movements[3], "", row_movements[4], "", account_id)
+                break

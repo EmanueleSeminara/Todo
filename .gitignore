@@ -1,10 +1,1 @@
-*.db
-__pycache__
 venv
-csv/*
-temp/*
-.env
-*.json
-*.BKT
-*.log
-*.OLD
